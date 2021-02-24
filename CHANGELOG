@@ -1,0 +1,9 @@
+1.0.2
+get_instance method added for convenience: returns an instance of the plugin interface
+
+
+
+1.0.1
+fixes
+sendData implementation
+insertSource : index must be >= 0
