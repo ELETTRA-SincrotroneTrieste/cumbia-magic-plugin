@@ -3,69 +3,155 @@
 
 #include <QObject>
 #include <QList>
-#include <qumultireaderplugininterface.h>
+#include <cumagicplugininterface.h>
 #include <cudata.h>
 #include <cudatalistener.h>
 
-class CuMagicPrivate;
+
+class CuMagicPluginPrivate;
 class Cumbia;
 class CumbiaPool;
 class CuControlsReaderFactoryI;
 class CuControlsFactoryPool;
 class CuControlsReaderA;
 
-/** \mainpage This plugin allows parallel and sequential reading from multiple sources
+class opropinfo {
+public:
+    opropinfo(QObject *o, const QString& p): obj(o), prop(p) { }
+    opropinfo() : obj(nullptr) {}
+    virtual ~opropinfo() {}
+    QObject *obj;
+    QString prop;
+};
+
+class CuMagicPrivate
+{
+public:
+    CuContext *context;
+    CuVariant on_error_value;
+    QList<int> v_idxs;
+    QMultiMap<int, opropinfo> omap;
+    QString t_prop;
+};
+
+class CuMagic : public QObject, public CuMagicI, public CuDataListener {
+    Q_OBJECT
+public:
+
+    enum TargetDataType { Scalar, Vector, List };
+
+    CuMagic(QObject* target, CumbiaPool *cu_pool, const CuControlsFactoryPool &fpoo,
+            const QString& source = QString(), const QString &property = QString());
+    ~CuMagic();
+    void setErrorValue(const CuVariant& v);
+
+    QString &operator [](std::size_t idx);
+    const QString& operator[](std::size_t idx) const;
+
+    void map(size_t idx, const QString &onam);
+    void map(size_t idx, QObject *obj, const QString &prop = QString());
+    QObject *mapped(size_t idx) const;
+
+    // CuDataListener interface
+public:
+    void onUpdate(const CuData &data);
+
+private slots:
+
+signals:
+    void newData(const CuData& da);
+
+    // CuMagicI interface
+public:
+    void setSource(const QString &src);
+    void unsetSource();
+    QString source() const;
+    QObject *get_target_object() const;
+    void sendData(const CuData &da);
+    CuContext *getContext() const;
+
+private:
+    CuMagicPrivate *d;
+
+    template <typename T> QVariant m_convert(const CuVariant& v, TargetDataType tdt = Scalar) {
+        size_t idx;
+
+        QVariant qva;
+        d->v_idxs.size() > 0 ? idx = d->v_idxs[0] : idx = 0;
+        std::vector<T> vi; // convert to vector always
+        bool converted = v.toVector<T>(vi) && vi.size() > idx;
+        if(converted && tdt == Scalar) {
+            qva = vi[idx];
+        }
+        else if(converted && tdt == Vector) {
+            QVector<T> out;
+            if(d->v_idxs.isEmpty()) // the whole vector
+                out = QVector<T>(vi.begin(), vi.end());
+            else  { // pick desired indexes
+                foreach( size_t i, d->v_idxs)
+                    if(vi.size() > i)
+                        out << vi[i];
+            }
+            qva = QVariant::fromValue(out);
+        }
+        else if(converted && tdt == List) {
+            QList<T> out;
+            if(d->v_idxs.isEmpty()) // the whole vector
+                out = QList<T>(vi.begin(), vi.end());
+            else  { // pick desired indexes
+                foreach( size_t i, d->v_idxs)
+                    if(vi.size() > i)
+                        out << vi[i];
+            }
+            qva = QVariant::fromValue(out);
+        }
+        return qva;
+    } // end template function m_convert
+
+};
+
+/** \mainpage This plugin allows magic
  *
- * Please read CuMagicPluginInterface documentation and the <em>multireader</em> example
+ * \par Introduction
+ * This plugin provides objects called CuMagic that can be *attached* to normal Qt widgets (or simple QObjects)
+ * and display values read from cumbia on them. A Qt *property* determines how to show the data. A *custom property*
+ * may be specified. Otherwise, *value*, *text* and other default ones are searched for.
+ *
+ * \section Use cases
+ *
+ * \subsection 1. CuMagic attached to one single object
+ *
+ * \li cumbia scalar data - scalar property: the scalar value is *set* on the property
+ * \li cumbia vector data and no index mapping - scalar property: *the first element is set* on the property
+ * \li cumbia vector data and one or more indexes specified - scalar property: *the first specified index is used*
+ *
+ * \li cumbia scalar data - vector property (QVariantList): the value is set on element 0 of the vector
+ * \li cumbia spectrum data and no indexes specified: the whole vector is set on the property
+ * \li cumbia spectrum data with indexes specified: the set of indexes determines which values are taken from the vector and
+ *     *set* on the property.
+ *
+ * \subsection 2. CuMagic attached to a list of objects
+ *
+ * \li cumbia scalar data: can only be used in context number 1.
+ * \li cumbia spectrum data: through index mapping, each element of the data array can be displayed in the specified object
+ *
+ * Please read CuMagicPluginInterface documentation and the <em>magicdemo</em> example
  * under the examples subfolder of the plugin directory.
  *
  * \code
  *
-void Multireader::m_loadMultiReaderPlugin() {
-    QObject *plugin_qob;
-    CuMagicPluginInterface *multi_r;
-    if(!multi_r) { // initialize plugin once
-        multi_r = pl.get<CuMagicPluginInterface>("libcumbia-magic-plugin.so", &plugin_qob);
-        if(!multi_r)
-            perr("Multireader: failed to load plugin \"libcumbia-magic-plugin.so\"");
+    QObject *magic_obj;
+    CuMagicPluginInterface *magic_i = CuMagicPluginInterface* get_instance(cu_pool, fpool, &magic_obj);
+    if(!magic_i) // initialize plugin once
+            perr("CuMagicPluginInterface: failed to load plugin \"libcumbia-magic-plugin.so\"");
         else {
-            // configure multi reader
-            // cu_t is a reference to CumbiaTango
-            // cu_tango_r_fac is a CuTReaderFactory
-            // CuTReader::Manual is the CuTReader::RefreshMode enum value that identifies
-            // manual refresh mode for the Tango engine. It tells the CuMagic to
-            // perform a sequential read of the sources, one after another, and emit the
-            // onSeqReadComplete when each cycle is over.
-            // A value of -1 instead of CuTReader::Manual would configure the CuMagic to
-            // read the n sources concurrently. In this case, no onSeqReadComplete is emitted.
-            //
-            m_multir->init(cu_t, cu_tango_r_fac,  CuTReader::Manual);
-            // get multi reader as qobject in order to connect signals to slots
-            connect(m_multir->get_qobject(), SIGNAL(onNewData(const CuData&)), this, SLOT(newData(const CuData&)));
-            connect(m_multir->get_qobject(), SIGNAL(onSeqReadComplete(const QList<CuData >&)), this, SLOT(seqReadComplete(const QList<CuData >&)));
-            // set the sources
-            m_multir->insertSource("src1", 0);
-            m_multir->insertSource("src2", 1);
-
-            // need another (sequential) multi reader
-            CuMagic *r2 = m_multir->getMultiSequentialReader(parent);
-            // connect(r2, SIGNAL(onSeqReadComplete(const QList<CuData >&)) ...
-            // need another (sequential and manually refreshed) reader
-            CuMagic *manual_r3 = m_multir->getMultiSequentialReader(parent, true);
-        }
+        QuLabel label = new QuLabel(this);
+        magic_i->new_magic(label, "$1/double_scalar");
     }
 }
  *
  * \endcode
  *
- * Another version of the *init* method accepts a pointer to CumbiaPool and a reference to CuControlsFactoryPool.
- *
- * \note
- * If the application needs only one multi reader, CuMagicPluginInterface and the object returned by get_qobject
- * for signal/slot connections can be used directly.
- * The object is *shared* across the entire application.
- * If you need more than one multi reader in your application, use getMultiSequentialReader or  getMultiConcurrentReader
- * to obtain new instances. Call them with a parent for automatic destruction (r2 and manual_r3 in the example above)
  *
  * \par Warning
  * Do not forget to call
@@ -75,8 +161,10 @@ void Multireader::m_loadMultiReaderPlugin() {
  * \endcode
  *
  * before the application exits. In fact, if the plugin is destroyed *after* Cumbia, the behavior is undefined.
+ *
+ *
  */
-class CuMagic : public QObject, public CuMagicPluginInterface, public CuDataListener
+class CuMagicPlugin : public QObject, public CuMagicPluginInterface
 {
     Q_OBJECT
 #if QT_VERSION >= 0x050000
@@ -86,50 +174,18 @@ class CuMagic : public QObject, public CuMagicPluginInterface, public CuDataList
     Q_INTERFACES(CuMagicPluginInterface)
 
 public:
-    CuMagic(QObject *parent = 0);
 
-    virtual ~CuMagic();
+    CuMagicPlugin(QObject *parent = nullptr);
+    virtual ~CuMagicPlugin();
 
     // CuMagicPluginInterface interface
 public:
-
-    void init(Cumbia *cumbia, const CuControlsReaderFactoryI &r_fac, int mode = CuMagicPluginInterface::SequentialReads);
-    void init(CumbiaPool *cumbia_pool, const CuControlsFactoryPool &fpool, int mode = CuMagicPluginInterface::SequentialReads);
-    void sendData(const QString& s, const CuData& da);
-    void sendData(int index, const CuData& da);
-    void setSources(const QStringList &srcs);
-    void unsetSources();
-    void insertSource(const QString &src, int i);
-    void removeSource(const QString &src);
+    CuMagicI *new_magic(QObject *target, const QString &source = QString(), const QString &property = QString()) const;
+    void init(CumbiaPool *cumbia_pool, const CuControlsFactoryPool &fpool);
     const QObject *get_qobject() const;
-    QStringList sources() const;
-
-    int period() const;
-    void setPeriod(int ms);
-    void setSequential(bool seq);
-    bool sequential() const;
-
-    CuMagicPluginInterface *getMultiSequentialReader(QObject *parent, bool manual_refresh);
-    CuMagicPluginInterface *getMultiConcurrentReader(QObject *parent);
-    CuContext *getContext() const;
-
-public slots:
-    void startRead();
-
-signals:
-    void onNewData(const CuData& da);
-    void onSeqReadComplete(const QList<CuData >& data);
 
 private:
-    CuMagicPrivate *d;
-
-    void m_timerSetup();
-    int m_matchNoArgs(const QString& src) const;
-
-    // CuDataListener interface
-public:
-    void onUpdate(const CuData &data);
-
+    CuMagicPluginPrivate *d;
 };
 
 #endif // QUMULTIREADER_H

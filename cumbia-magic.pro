@@ -86,7 +86,7 @@ inc.path = $${INC_DIR}
 # defined in cumbia-qtcontrols.pri, by default $${INSTALL_ROOT}/include/cumbia-qtcontrols
 #
 iface_inc.path = $${CUMBIA_QTCONTROLS_INCLUDES}
-iface_inc.files = qumagicplugininterface.h
+iface_inc.files = cumagicplugininterface.h
 
 # installation
 
@@ -105,13 +105,13 @@ TEMPLATE = lib
 CONFIG += plugin debug
 
 SOURCES += \
-    qumagic.cpp
+    cumagic.cpp
 
 HEADERS += \
-    qumagic.h
+    cumagic.h
 
 DISTFILES += cumbia-magic.json  \
-    qumagicplugininterface.h
+    cumagicplugininterface.h \
 
 inc.files += $${HEADERS}
 
