@@ -95,17 +95,27 @@ void CuMagic::map(size_t idx, const QString &onam) {
     qDebug() << __PRETTY_FUNCTION__ << "mapping index " << idx << "(" << onam << ") "<< "into object " << onam.section('/', 0, 0) <<
                 " / property " << onam.section('/', 1, 1);
     QObject *o = parent()->findChild<QObject *>(onam.section('/', 0, 0));
-    if(o) d->omap.insert(idx, opropinfo(o, onam.section('/', 1, 1)));
+    if(o) {
+        if(d->omap.contains(onam))
+            d->omap[onam].idxs.append(idx);
+        else
+            d->omap.insert(onam, opropinfo(o, onam.section('/', 1, 1), idx));
+    }
     else perr("CuMagic.map: object \"%s\" not found among children of \"%s\" type %s", qstoc(onam),
               qstoc(parent()->objectName()), parent()->metaObject()->className());
 }
 
 void CuMagic::map(size_t idx, QObject *obj, const QString& prop) {
-    d->omap.insert(idx, opropinfo(obj, prop));
+    if(obj->objectName().isEmpty())
+        perr("CuMagic.map: error: object %p has no name", obj);
+    else if(d->omap.contains(obj->objectName()))
+        d->omap[obj->objectName()].idxs.append(idx);
+    else
+        d->omap.insert(obj->objectName(), opropinfo(obj, prop, idx));
 }
 
-QObject *CuMagic::mapped(size_t idx) const {
-    return d->omap.value(idx).obj;
+opropinfo &CuMagic::find(const QString &onam) {
+    return d->omap[onam];
 }
 
 void CuMagic::sendData(const CuData &da) {
@@ -135,102 +145,73 @@ QString CuMagic::source() const {
 }
 
 void CuMagic::onUpdate(const CuData &data) {
-    QObject *t = parent(); // target object
     QString from = QString::fromStdString( data["src"].toString());
     bool err = data["err"].toBool();
     std::string msg = data["msg"].toString();
-    if(!err) {
-        const CuVariant &dv = data["value"];
-        const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
-        printf("CuMagic.onUpdate: %s: %s\n", qstoc(from), v.toString().c_str());
-        QStringList props;
-        bool converted = false, unsupported_type = false;
-        d->t_prop.isEmpty() ?  props << "value" << "text" : props << d->t_prop;
-        foreach(const QString& qprop, props) {
-            int pi = t->metaObject()->indexOfProperty(qprop.toLatin1().data());
-            QVariant qva;
-            if(pi > -1 && !converted)  {
-                QMetaProperty mp = t->metaObject()->property(pi);
-                if(strcmp(mp.typeName(), "QVector<double>") == 0) {
-                    qva = m_convert<double>(v, Vector);
-                }
-                else if(strcmp(mp.typeName(), "QList<double>") == 0) {
-                    qva = m_convert<double>(v, List);
-                }
-                else if(strcmp(mp.typeName(), "QVector<int>") == 0) {
-                    qva = m_convert<int>(v, Vector);
-                }
-                else if(strcmp(mp.typeName(), "QList<int>") == 0) {
-                    qva = m_convert<int>(v, List);
-                }
-                else {
-                    switch(mp.userType()) {
-                    case QMetaType::Int: {
-                        qva = m_convert<int>(v);
-                    }
-                        break;
-                    case QMetaType::LongLong:
-                    case QMetaType::Long: {
-                        qva = m_convert<long long int>(v);
-                    } break;
-                    case QMetaType::UInt:
-                    case QMetaType::UShort:
-                    case QMetaType::UChar: {
-                        qva = m_convert<unsigned int>(v);
-                    } break;
-                    case QMetaType::ULongLong:
-                    case QMetaType::ULong: {
-                        qva = m_convert<unsigned long long>(v);
-                    } break;
-                    case QMetaType::Double:
-                    case QMetaType::Float: {
-                        qva = m_convert<double>(v);
-                    } break;
-                    case QMetaType::Bool: {
-                        qva = m_convert<int>(v);
-                    } break;
-                    case QVariant::String: {
-                        qva = QuString(v);
-                    }
-                        break;
-                    case QVariant::StringList: {
-                        qva = QuStringList(v);
-                    } break;
-                    default:
-                        unsupported_type = true;
-                        break;
-                    } // switch
+    bool converted = false, unsupported_type = false;
+    const CuVariant &dv = data["value"];
+    const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
+    printf("CuMagic.onUpdate: %s: %s\n", qstoc(from), v.toString().c_str());
 
+    if(!err && d->omap.size() > 0) {
+        QVariant qva;
+        CuVariant::DataType dt = v.getType();
+        QMap<QString, CuVariant> vgroup;
+        switch(dt) {
+        case CuVariant::Double:
+            err = !m_v_split<double>(v, d->omap, vgroup);
+            break;
+        case CuVariant::Float:
+            err = !m_v_split<float>(v, d->omap, vgroup);
+            break;
+        case CuVariant::Int:
+            err = !m_v_split<int>(v, d->omap, vgroup);
+            break;
+        case CuVariant::LongInt:
+            err = !m_v_split<long int>(v, d->omap, vgroup);
+            break;
+        case CuVariant::LongLongInt:
+            err = !m_v_split<long long int>(v, d->omap, vgroup);
+            break;
+        case CuVariant::UInt:
+            err = !m_v_split<unsigned int>(v, d->omap, vgroup);
+            break;
+        case CuVariant::LongUInt:
+            err = !m_v_split<unsigned long int>(v, d->omap, vgroup);
+            break;
+        case CuVariant::LongLongUInt:
+            err = !m_v_split<unsigned long long int>(v, d->omap, vgroup);
+            break;
+        case CuVariant::Short:
+            err = !m_v_split<short>(v, d->omap, vgroup);
+            break;
+        case CuVariant::UShort:
+            err = !m_v_split<unsigned short>(v, d->omap, vgroup);
+            break;
+        case CuVariant::LongDouble:
+            err = !m_v_split<long double>(v, d->omap, vgroup);
+            break;
+        case CuVariant::String:
+            err = !m_v_str_split(v, d->omap, vgroup);
+            break;
+        case CuVariant::VoidPtr:
+        case CuVariant::Boolean:
+        case CuVariant::TypeInvalid:
+        case CuVariant::EndDataTypes:
+            unsupported_type = true;
+            break;
 
-                }
-
-                if(!converted && !unsupported_type && d->omap.isEmpty() && qva.isValid()) {
-                    converted = t->setProperty(qprop.toLatin1().data(), qva);
-                    qDebug() << __PRETTY_FUNCTION__ << "----- " << qva << "on " << qprop.toLatin1().data() << "success? " << converted;
-                }
-                else if(!converted && !unsupported_type && qva.isValid()) {
-                    printf("\e[1;32mCuMagic.onUpdate: mappings defined for object %s\e[0m\n", qstoc(parent()->objectName()));
-                    foreach(int k, d->omap.keys()) {
-                        qDebug() << __PRETTY_FUNCTION__ << "- " << k;
-                        for(int i = 0 ; i < d->omap.values(k).size(); i++)
-                            qDebug() << __PRETTY_FUNCTION__ << "\t- " << d->omap.values()[i].obj << " ( prop" << d->omap.values()[i].prop << ")";
-                    }
-                    qDebug() << __PRETTY_FUNCTION__ << "---> QVariant " << qva << "type" << qva.userType() << "str type" << qva.typeName();
-                }
-
-            } // not converted
-        } // foreach
-
-        if((err = !converted) )
-            msg = "CuMagic.onUpdate: conversion error in data {%s" + data.toString() + "}";
-        bool disable_on_err = t->metaObject()->indexOfProperty("disable_on_err") < 0 || t->property("disable_on_err").toBool();
-        QWidget *w = qobject_cast<QWidget *>(parent());
-        if(w) {
-            w->setDisabled(disable_on_err && err);
-            w->setToolTip(msg.c_str());
         }
-        emit newData(data);
+        converted = !err;
+        foreach(const QString& onam, d->omap.keys()) {
+            const opropinfo &opropi = d->omap[onam];
+            m_prop_set(opropi.obj, vgroup[onam], opropi.prop);
+        }
     }
+    else if(!err) {
+        converted = m_prop_set(parent(), v, d->t_prop);
+    }
+    emit newData(data);
 }
 
 QObject *CuMagic::get_target_object() const {
@@ -239,6 +220,84 @@ QObject *CuMagic::get_target_object() const {
 
 CuContext *CuMagic::getContext() const {
     return d->context;
+}
+
+bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
+{
+    QStringList props;
+    bool converted = false, unsupported_type = false;
+    prop.isEmpty() ?  props << "value" << "text" : props << prop;
+    foreach(const QString& qprop, props) {
+        int pi = t->metaObject()->indexOfProperty(qprop.toLatin1().data());
+        QVariant qva;
+        if(pi > -1 && !converted)  {
+            QMetaProperty mp = t->metaObject()->property(pi);
+            if(strcmp(mp.typeName(), "QVector<double>") == 0) {
+                qva = m_convert<double>(v, Vector);
+            }
+            else if(strcmp(mp.typeName(), "QList<double>") == 0) {
+                qva = m_convert<double>(v, List);
+                QList<double> dl = qva.value<QList<double> > ();
+                qDebug() << __PRETTY_FUNCTION__ << "------------------> " << dl;
+            }
+            else if(strcmp(mp.typeName(), "QVector<int>") == 0) {
+                qva = m_convert<int>(v, Vector);
+            }
+            else if(strcmp(mp.typeName(), "QList<int>") == 0) {
+                qva = m_convert<int>(v, List);
+            }
+            else {
+                switch(mp.userType()) {
+                case QMetaType::Int: {
+                    qva = m_convert<int>(v);
+                } break;
+                case QMetaType::LongLong:
+                case QMetaType::Long: {
+                    qva = m_convert<long long int>(v);
+                } break;
+                case QMetaType::UInt:
+                case QMetaType::UShort:
+                case QMetaType::UChar: {
+                    qva = m_convert<unsigned int>(v);
+                } break;
+                case QMetaType::ULongLong:
+                case QMetaType::ULong: {
+                    qva = m_convert<unsigned long long>(v);
+                } break;
+                case QMetaType::Double:
+                case QMetaType::Float: {
+                    qva = m_convert<double>(v);
+                } break;
+                case QMetaType::Bool: {
+                    qva = m_convert<int>(v);
+                } break;
+                case QVariant::String: {
+                    qva = QuString(v);
+                } break;
+                case QVariant::StringList: {
+                    qva = QuStringList(v);
+                } break;
+                default:
+                    unsupported_type = true;
+                    break;
+                } // switch
+
+
+            }
+
+            printf("\e[1;33m source %s input %s property %s unsupported_type %d qva valid ? %d\e[0m\n", qstoc(source()),
+                   v.toString().c_str(), qstoc(qprop), unsupported_type, qva.isValid());
+            if(!unsupported_type && qva.isValid()) {
+                converted = t->setProperty(qprop.toLatin1().data(), qva);
+                qDebug() << __PRETTY_FUNCTION__ << "----- " << qva << "on " << qprop.toLatin1().data() << "success? " << converted;
+            }
+        }
+    }
+    return converted;
+}
+
+bool CuMagic::m_v_str_split(const CuVariant &in, const QMap<QString, opropinfo> &opropis, QMap<QString, CuVariant> &out) {
+
 }
 
 #if QT_VERSION < 0x050000

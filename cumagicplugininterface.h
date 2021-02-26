@@ -15,6 +15,16 @@ class CuData;
 class CuContext;
 class CuVariant;
 
+class opropinfo {
+public:
+    opropinfo(QObject *o, const QString& p, int idx): obj(o), prop(p), idxs{idx} { }
+    opropinfo() : obj(nullptr) {}
+    virtual ~opropinfo() {}
+    QObject *obj;
+    QString prop;
+    QList<int> idxs;
+};
+
 class CuMagicI {
 public:
     virtual ~CuMagicI() {}
@@ -62,7 +72,12 @@ public:
     virtual void map(size_t idx, const QString& onam) = 0;
     virtual void map(size_t idx, QObject *obj, const QString &prop = QString()) = 0;
 
-    virtual QObject *mapped(size_t idx) const = 0;
+    /*!
+     * \brief find find the opropinfo associated to a given object name
+     * \param onam object name to search
+     * \return a reference to an opropinfo, if found, an empty opropinfo otherwise
+     */
+    virtual  opropinfo& find(const QString& onam) = 0;
 };
 
 

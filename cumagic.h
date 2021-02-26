@@ -15,14 +15,6 @@ class CuControlsReaderFactoryI;
 class CuControlsFactoryPool;
 class CuControlsReaderA;
 
-class opropinfo {
-public:
-    opropinfo(QObject *o, const QString& p): obj(o), prop(p) { }
-    opropinfo() : obj(nullptr) {}
-    virtual ~opropinfo() {}
-    QObject *obj;
-    QString prop;
-};
 
 class CuMagicPrivate
 {
@@ -30,8 +22,9 @@ public:
     CuContext *context;
     CuVariant on_error_value;
     QList<int> v_idxs;
-    QMultiMap<int, opropinfo> omap;
+    QMap<QString, opropinfo> omap;
     QString t_prop;
+    QString format;
 };
 
 class CuMagic : public QObject, public CuMagicI, public CuDataListener {
@@ -50,7 +43,7 @@ public:
 
     void map(size_t idx, const QString &onam);
     void map(size_t idx, QObject *obj, const QString &prop = QString());
-    QObject *mapped(size_t idx) const;
+    opropinfo& find(const QString& onam);
 
     // CuDataListener interface
 public:
@@ -72,6 +65,24 @@ public:
 
 private:
     CuMagicPrivate *d;
+
+    bool m_prop_set(QObject* t, const CuVariant& v, const QString& prop);
+    bool m_v_str_split(const CuVariant& in, const QMap<QString, opropinfo> &opromap, QMap<QString, CuVariant> &out);
+
+    template <typename T> bool m_v_split(const CuVariant& in, const QMap<QString, opropinfo>& opromap, QMap<QString, CuVariant> &out) {
+        bool ok = true;
+        out.clear();
+        std::vector<T> dv;
+        ok &= in.toVector<T>(dv);
+        foreach(const opropinfo& opropi, opromap) {
+            std::vector <double> subv;
+            foreach(size_t i, opropi.idxs)
+                if(dv.size() > i)
+                    subv.push_back(dv[i]);
+            out[opropi.obj->objectName()] = CuVariant(subv);
+        }
+        return ok;
+    }
 
     template <typename T> QVariant m_convert(const CuVariant& v, TargetDataType tdt = Scalar) {
         size_t idx;
@@ -103,7 +114,10 @@ private:
                     if(vi.size() > i)
                         out << vi[i];
             }
+            qDebug() << __PRETTY_FUNCTION__ << "out is " << out;
             qva = QVariant::fromValue(out);
+            qDebug() << __PRETTY_FUNCTION__ << "qva is " << qva;
+            qDebug() << __PRETTY_FUNCTION__ << "qva back to list " << qva.value<QList<T> >();
         }
         return qva;
     } // end template function m_convert
