@@ -76,6 +76,7 @@ CuMagic::CuMagic(QObject *target, CumbiaPool *cu_pool, const CuControlsFactoryPo
     d->context = new CuContext(cu_pool, fpoo);
     d->on_error_value = CuVariant(-1);
     d->t_prop = property;
+    d->format = "%.2f";
     if(!src.isEmpty()) CuMagic::setSource(src);
 }
 
@@ -152,6 +153,10 @@ void CuMagic::onUpdate(const CuData &data) {
     const CuVariant &dv = data["value"];
     const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
     printf("CuMagic.onUpdate: %s: %s\n", qstoc(from), v.toString().c_str());
+
+    if(data["type"].toString() == "property") {
+        m_configure(data);
+    }
 
     if(!err && d->omap.size() > 0) {
         QVariant qva;
@@ -272,7 +277,8 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                     qva = m_convert<int>(v);
                 } break;
                 case QVariant::String: {
-                    qva = QuString(v);
+                    std::string s = v.toString(&converted, d->format.toStdString().c_str());
+                    qva = QuString(s);
                 } break;
                 case QVariant::StringList: {
                     qva = QuStringList(v);
@@ -298,6 +304,37 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
 
 bool CuMagic::m_v_str_split(const CuVariant &in, const QMap<QString, opropinfo> &opropis, QMap<QString, CuVariant> &out) {
 
+}
+
+void CuMagic::m_configure(const CuData &da) {
+    QList<QObject *>objs;
+    if(d->omap.isEmpty() ) objs << parent();
+    else {
+        foreach(const opropinfo& oi, d->omap.values())
+            objs << oi.obj;
+    }
+    foreach(QObject *t, objs) {
+        if(da.containsKey("min") && da.containsKey("max")) {
+            double m = -1.0, M = -1.0;
+            da["min"].to<double>(m);
+            da["max"].to<double>(M);
+            if(m != M) {
+                foreach(const QString& p, QStringList() << "minimum" << "min" << "lowerBound" << "yLowerBound") {
+                    if(t->metaObject()->indexOfProperty(qstoc(p)) > -1) {
+                        t->setProperty(p.toStdString().c_str(), m);
+                    }
+                }
+                foreach(const QString& p, QStringList() << "maximum" << "max" << "upperBound" << "yUpperBound") {
+                    if(t->metaObject()->indexOfProperty(qstoc(p)) > -1) {
+                        t->setProperty(qstoc(p), M);
+                    }
+                }
+            }
+        }
+        if(da.containsKey("format")) {
+            d->format = QuString(da, "format");
+        }
+    }
 }
 
 #if QT_VERSION < 0x050000

@@ -122,6 +122,7 @@ private:
         return qva;
     } // end template function m_convert
 
+    void m_configure(const CuData& da);
 };
 
 /** \mainpage This plugin allows magic
