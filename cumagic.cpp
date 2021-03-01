@@ -10,6 +10,7 @@
 #include <QMetaProperty>
 #include <qustringlist.h>
 #include <qustring.h>
+#include <QRegularExpression>
 
 class CuMagicPluginPrivate {
 public:
@@ -119,13 +120,27 @@ opropinfo &CuMagic::find(const QString &onam) {
     return d->omap[onam];
 }
 
+void CuMagic::mapProperty(const QString &from, const QString &to) {
+    d->propmap[from] = to;
+}
+
+QString CuMagic::propMappedFrom(const char *to) {
+    return d->propmap.key(to, QString());
+}
+
+QString CuMagic::propMappedTo(const char *from) {
+    return d->propmap.value(from, QString());
+}
+
 void CuMagic::sendData(const CuData &da) {
     if(d->context) d->context->sendData(da);
 }
 
 void CuMagic::setSource(const QString &src) {
-    CuControlsReaderA *r = d->context->replace_reader(src.toStdString(), this);
-    if(r) r->setSource(src);
+    QString s = m_get_idxs(src);
+    qDebug() << __PRETTY_FUNCTION__ << src << "-->" << s << "idxs" << d->v_idxs;
+    CuControlsReaderA *r = d->context->replace_reader(s.toStdString(), this);
+    if(r) r->setSource(s);
 }
 
 void CuMagic::unsetSource() {
@@ -146,20 +161,16 @@ QString CuMagic::source() const {
 }
 
 void CuMagic::onUpdate(const CuData &data) {
-    QString from = QString::fromStdString( data["src"].toString());
     bool err = data["err"].toBool();
     std::string msg = data["msg"].toString();
-    bool converted = false, unsupported_type = false;
     const CuVariant &dv = data["value"];
     const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
-    printf("CuMagic.onUpdate: %s: %s\n", qstoc(from), v.toString().c_str());
 
     if(data["type"].toString() == "property") {
         m_configure(data);
     }
 
     if(!err && d->omap.size() > 0) {
-        QVariant qva;
         CuVariant::DataType dt = v.getType();
         QMap<QString, CuVariant> vgroup;
         switch(dt) {
@@ -196,26 +207,32 @@ void CuMagic::onUpdate(const CuData &data) {
         case CuVariant::LongDouble:
             err = !m_v_split<long double>(v, d->omap, vgroup);
             break;
+        case CuVariant::Boolean:
+            err = !m_v_split<bool>(v, d->omap, vgroup);
+            break;
         case CuVariant::String:
             err = !m_v_str_split(v, d->omap, vgroup);
             break;
         case CuVariant::VoidPtr:
-        case CuVariant::Boolean:
         case CuVariant::TypeInvalid:
         case CuVariant::EndDataTypes:
-            unsupported_type = true;
+            err = true;
+            msg = "CuMagic.onUpdate: unsupported type \"" + v.dataTypeStr(dt) + "\"";
             break;
 
         }
-        converted = !err;
         foreach(const QString& onam, d->omap.keys()) {
             const opropinfo &opropi = d->omap[onam];
-            m_prop_set(opropi.obj, vgroup[onam], opropi.prop);
+            if(!err) err = !m_prop_set(opropi.obj, vgroup[onam], opropi.prop);
+            m_err_msg_set(opropi.obj, msg.c_str(), err);
         }
     }
     else if(!err) {
-        converted = m_prop_set(parent(), v, d->t_prop);
+        printf("\e[0;33mcalling m_prop set wit v %s prop %s\e[0m\n", v.toString().c_str(), qstoc(d->t_prop));
+        err = !m_prop_set(parent(), v, d->t_prop);
+        m_err_msg_set(parent(), msg.c_str(), err);
     }
+
     emit newData(data);
 }
 
@@ -227,14 +244,25 @@ CuContext *CuMagic::getContext() const {
     return d->context;
 }
 
+QString CuMagic::format() const {
+    return d->format;
+}
+
+QString CuMagic::display_unit() const {
+    return d->display_unit;
+}
+
 bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
 {
     QStringList props;
     bool converted = false, unsupported_type = false;
-    prop.isEmpty() ?  props << "value" << "text" : props << prop;
+    QVariant qva;
+    prop.isEmpty() ?  props <<  d->propmap.value("value", "value")
+                             << d->propmap.value("checked", "checked")
+                             << d->propmap.value("text", "text")
+                                : props << prop;
     foreach(const QString& qprop, props) {
         int pi = t->metaObject()->indexOfProperty(qprop.toLatin1().data());
-        QVariant qva;
         if(pi > -1 && !converted)  {
             QMetaProperty mp = t->metaObject()->property(pi);
             if(strcmp(mp.typeName(), "QVector<double>") == 0) {
@@ -242,8 +270,6 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
             }
             else if(strcmp(mp.typeName(), "QList<double>") == 0) {
                 qva = m_convert<double>(v, List);
-                QList<double> dl = qva.value<QList<double> > ();
-                qDebug() << __PRETTY_FUNCTION__ << "------------------> " << dl;
             }
             else if(strcmp(mp.typeName(), "QVector<int>") == 0) {
                 qva = m_convert<int>(v, Vector);
@@ -274,7 +300,7 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                     qva = m_convert<double>(v);
                 } break;
                 case QMetaType::Bool: {
-                    qva = m_convert<int>(v);
+                    qva = m_convert<bool>(v);
                 } break;
                 case QVariant::String: {
                     std::string s = v.toString(&converted, d->format.toStdString().c_str());
@@ -287,23 +313,63 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                     unsupported_type = true;
                     break;
                 } // switch
-
-
             }
-
-            printf("\e[1;33m source %s input %s property %s unsupported_type %d qva valid ? %d\e[0m\n", qstoc(source()),
-                   v.toString().c_str(), qstoc(qprop), unsupported_type, qva.isValid());
             if(!unsupported_type && qva.isValid()) {
-                converted = t->setProperty(qprop.toLatin1().data(), qva);
-                qDebug() << __PRETTY_FUNCTION__ << "----- " << qva << "on " << qprop.toLatin1().data() << "success? " << converted;
+                converted |= t->setProperty(qprop.toLatin1().data(), qva);
             }
         }
     }
+    if(!converted)
+        perr("CuMagic.m_prop_set: failed to set value %s on any of properties {%s} on %s",
+             v.toString().c_str(), qstoc(props.join(",")), qstoc(t->objectName()));
     return converted;
 }
 
 bool CuMagic::m_v_str_split(const CuVariant &in, const QMap<QString, opropinfo> &opropis, QMap<QString, CuVariant> &out) {
+    bool ok = true;
+    out.clear();
+    std::vector<std::string> dv;
+    dv = in.toStringVector(&ok);
+    foreach(const opropinfo& opropi, opropis) {
+        std::vector <std::string> subv;
+        foreach(size_t i, opropi.idxs)
+            if(dv.size() > i)
+                subv.push_back(dv[i]);
+        out[opropi.obj->objectName()] = CuVariant(subv);
+    }
+    return ok;
+}
 
+// a/b/c/d[1,2,4-8,10,12-20]
+QString CuMagic::m_get_idxs(const QString &src) const {
+    // (\[[\d,\-]+\])
+    QRegularExpression re("(\\[[\\d,\\-]+\\])");
+    QRegularExpressionMatch m = re.match(src);
+    QRegularExpression re2("(\\d+)\\s*\\-\\s*(\\d+)");
+    bool ok = true;
+    d->v_idxs.clear();
+    if(m.capturedTexts().size() > 1) {
+        QString s = m.capturedTexts().at(1);
+        foreach(const QString &t, s.split(',', Qt::SkipEmptyParts) ) {
+            if(!t.contains('-') && t.toInt(&ok) && ok)
+                d->v_idxs << t.trimmed().toInt(&ok);
+            else if(t.contains(re2) && ok) {
+                QRegularExpressionMatch m2 = re2.match(t);
+                const QStringList& ct = m2.capturedTexts();
+                int to = -1, from = ct[1].toInt(&ok);
+                if(ok) to = ct[2].toInt(&ok);
+                for( int q = from; ok && q <= to; q++)
+                    d->v_idxs << q;
+            }
+            if(!ok ) break;
+        }
+    }
+    if(!ok) {
+        d->v_idxs.clear();
+        perr("CuMagic.m_get_idxs: error in source syntax \"%s\": correct form: a/b/c/d[1,2,3,7-12,20]", qstoc(src));
+    }
+    QString s(src);
+    return s.remove(re);
 }
 
 void CuMagic::m_configure(const CuData &da) {
@@ -319,22 +385,33 @@ void CuMagic::m_configure(const CuData &da) {
             da["min"].to<double>(m);
             da["max"].to<double>(M);
             if(m != M) {
-                foreach(const QString& p, QStringList() << "minimum" << "min" << "lowerBound" << "yLowerBound") {
+                foreach(const QString& p, QStringList() << "minimum" << "min") {
                     if(t->metaObject()->indexOfProperty(qstoc(p)) > -1) {
                         t->setProperty(p.toStdString().c_str(), m);
                     }
                 }
-                foreach(const QString& p, QStringList() << "maximum" << "max" << "upperBound" << "yUpperBound") {
+                foreach(const QString& p, QStringList() << "maximum" << "max") {
                     if(t->metaObject()->indexOfProperty(qstoc(p)) > -1) {
                         t->setProperty(qstoc(p), M);
                     }
                 }
             }
         }
-        if(da.containsKey("format")) {
+        if(da.containsKey("format"))
             d->format = QuString(da, "format");
-        }
+        if(da.containsKey("display_unit"))
+            d->display_unit = QuString(da, "display_unit");
     }
+}
+
+void CuMagic::m_err_msg_set(QObject *o, const QString &msg, bool err) {
+    QWidget *w = qobject_cast<QWidget *>(o);
+    if(w && (w->metaObject()->indexOfProperty("disable_on_error") > -1 || w->property("disable_on_error").toBool()) ) {
+        w->setDisabled(err);
+    }
+    if(w) w->setToolTip(msg);
+    else if(err) perr("CuMagic: error: %s", qstoc(msg));
+
 }
 
 #if QT_VERSION < 0x050000

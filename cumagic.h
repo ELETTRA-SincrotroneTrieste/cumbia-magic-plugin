@@ -23,8 +23,9 @@ public:
     CuVariant on_error_value;
     QList<int> v_idxs;
     QMap<QString, opropinfo> omap;
+    QMap<QString, QString> propmap;
     QString t_prop;
-    QString format;
+    QString format, display_unit;
 };
 
 class CuMagic : public QObject, public CuMagicI, public CuDataListener {
@@ -45,6 +46,10 @@ public:
     void map(size_t idx, QObject *obj, const QString &prop = QString());
     opropinfo& find(const QString& onam);
 
+    void mapProperty(const QString& from, const QString& to);
+    QString propMappedFrom(const char *to);
+    QString propMappedTo(const char *from);
+
     // CuDataListener interface
 public:
     void onUpdate(const CuData &data);
@@ -62,12 +67,15 @@ public:
     QObject *get_target_object() const;
     void sendData(const CuData &da);
     CuContext *getContext() const;
+    QString format() const;
+    QString display_unit() const;
 
 private:
     CuMagicPrivate *d;
 
     bool m_prop_set(QObject* t, const CuVariant& v, const QString& prop);
     bool m_v_str_split(const CuVariant& in, const QMap<QString, opropinfo> &opromap, QMap<QString, CuVariant> &out);
+    QString m_get_idxs(const QString& src) const;
 
     template <typename T> bool m_v_split(const CuVariant& in, const QMap<QString, opropinfo>& opromap, QMap<QString, CuVariant> &out) {
         bool ok = true;
@@ -92,7 +100,7 @@ private:
         std::vector<T> vi; // convert to vector always
         bool converted = v.toVector<T>(vi) && vi.size() > idx;
         if(converted && tdt == Scalar) {
-            qva = vi[idx];
+            qva = QVariant(vi[idx]);
         }
         else if(converted && tdt == Vector) {
             QVector<T> out;
@@ -114,15 +122,13 @@ private:
                     if(vi.size() > i)
                         out << vi[i];
             }
-            qDebug() << __PRETTY_FUNCTION__ << "out is " << out;
             qva = QVariant::fromValue(out);
-            qDebug() << __PRETTY_FUNCTION__ << "qva is " << qva;
-            qDebug() << __PRETTY_FUNCTION__ << "qva back to list " << qva.value<QList<T> >();
         }
         return qva;
     } // end template function m_convert
 
     void m_configure(const CuData& da);
+    void m_err_msg_set(QObject* o, const QString& msg, bool err);
 };
 
 /** \mainpage This plugin allows magic
