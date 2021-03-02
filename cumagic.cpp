@@ -342,8 +342,8 @@ bool CuMagic::m_v_str_split(const CuVariant &in, const QMap<QString, opropinfo> 
 
 // a/b/c/d[1,2,4-8,10,12-20]
 QString CuMagic::m_get_idxs(const QString &src) const {
-    // (\[[\d,\-]+\])
-    QRegularExpression re("(\\[[\\d,\\-]+\\])");
+    // \[([\d,\-]+)\]
+    QRegularExpression re("\\[([\\d,\\-]+)\\]");
     QRegularExpressionMatch m = re.match(src);
     QRegularExpression re2("(\\d+)\\s*\\-\\s*(\\d+)");
     bool ok = true;
