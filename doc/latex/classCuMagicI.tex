@@ -1,0 +1,270 @@
+\doxysection{Cu\+MagicI Class Reference}
+\label{classCuMagicI}\index{CuMagicI@{CuMagicI}}
+
+
+{\ttfamily \#include $<$cumagicplugininterface.\+h$>$}
+
+Inheritance diagram for Cu\+MagicI\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classCuMagicI}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \textbf{ $\sim$\+Cu\+MagicI} ()
+\item 
+virtual void \textbf{ set\+Source} (const Q\+String \&src)=0
+\begin{DoxyCompactList}\small\item\em set the source to read from. \end{DoxyCompactList}\item 
+virtual void \textbf{ unset\+Source} ()=0
+\begin{DoxyCompactList}\small\item\em Remove the reader. \end{DoxyCompactList}\item 
+virtual Q\+String \textbf{ source} () const =0
+\begin{DoxyCompactList}\small\item\em returns the configured source \end{DoxyCompactList}\item 
+virtual Q\+Object $\ast$ \textbf{ get\+\_\+target\+\_\+object} () const =0
+\begin{DoxyCompactList}\small\item\em get\+\_\+object returns the Q\+Object used in Cu\+Magic\+Plugin\+Interface\+::get\+Magic \end{DoxyCompactList}\item 
+virtual void \textbf{ send\+Data} (const Cu\+Data \&da)=0
+\begin{DoxyCompactList}\small\item\em send data to the reader \end{DoxyCompactList}\item 
+virtual Cu\+Context $\ast$ \textbf{ get\+Context} () const =0
+\begin{DoxyCompactList}\small\item\em get the context used by the multireader \end{DoxyCompactList}\item 
+virtual void \textbf{ set\+Error\+Value} (const Cu\+Variant \&v)=0
+\begin{DoxyCompactList}\small\item\em set\+Error\+Value in case of read error, display this value \end{DoxyCompactList}\item 
+virtual void \textbf{ map} (size\+\_\+t idx, const Q\+String \&onam)=0
+\item 
+virtual void \textbf{ map} (size\+\_\+t idx, Q\+Object $\ast$obj, const Q\+String \&prop=Q\+String())=0
+\item 
+virtual void \textbf{ map\+Property} (const Q\+String \&from, const Q\+String \&to)=0
+\begin{DoxyCompactList}\small\item\em map\+Property instruct \doxyref{Cu\+Magic}{p.}{classCuMagic} to use property {\itshape to} instead of {\itshape from} \end{DoxyCompactList}\item 
+virtual Q\+String \textbf{ prop\+Mapped\+To} (const char $\ast$from)=0
+\begin{DoxyCompactList}\small\item\em prop\+Mapped\+To given the {\itshape from} property, returns the property {\itshape from is mapped to} \end{DoxyCompactList}\item 
+virtual Q\+String \textbf{ prop\+Mapped\+From} (const char $\ast$to)=0
+\begin{DoxyCompactList}\small\item\em prop\+Mapped\+From given the {\itshape to} property, returns the property {\itshape from} associated to {\itshape to} by map\+Property \end{DoxyCompactList}\item 
+virtual \textbf{ opropinfo} \& \textbf{ find} (const Q\+String \&onam)=0
+\begin{DoxyCompactList}\small\item\em find find the opropinfo associated to a given object name \end{DoxyCompactList}\item 
+virtual Q\+String \textbf{ format} () const =0
+\begin{DoxyCompactList}\small\item\em get the suggested format to use when displaying the number, if available from the configuration stage. \end{DoxyCompactList}\item 
+virtual Q\+String \textbf{ display\+\_\+unit} () const =0
+\begin{DoxyCompactList}\small\item\em get the measurement unit, if available from the configuration stage \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuMagicI_aa62a9f97da752f7a8527421727389620}} 
+\index{CuMagicI@{CuMagicI}!````~CuMagicI@{$\sim$CuMagicI}}
+\index{````~CuMagicI@{$\sim$CuMagicI}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{$\sim$CuMagicI()}
+{\footnotesize\ttfamily virtual Cu\+Magic\+I\+::$\sim$\+Cu\+MagicI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\label{classCuMagicI_a9a67ae848a279099f9de6ea6fdd64714}} 
+\index{CuMagicI@{CuMagicI}!display\_unit@{display\_unit}}
+\index{display\_unit@{display\_unit}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{display\_unit()}
+{\footnotesize\ttfamily virtual Q\+String Cu\+Magic\+I\+::display\+\_\+unit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\begin{DoxyReturn}{Returns}
+the measurement unit, or an empty string if the {\itshape display\+\_\+unit} key is not found within the configuration data. 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a4b059763fd5e893770a2281678db64fb}.
+
+\mbox{\label{classCuMagicI_ad705da1cca1398bbd38c8e00600cc14d}} 
+\index{CuMagicI@{CuMagicI}!find@{find}}
+\index{find@{find}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{find()}
+{\footnotesize\ttfamily virtual \textbf{ opropinfo}\& Cu\+Magic\+I\+::find (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{onam }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em onam} & object name to search \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a reference to an opropinfo, if found, an empty opropinfo otherwise 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a787d8bee91e0a10c9cda61cfbee2863e}.
+
+\mbox{\label{classCuMagicI_a88cde25449d304f693124703983dffa6}} 
+\index{CuMagicI@{CuMagicI}!format@{format}}
+\index{format@{format}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{format()}
+{\footnotesize\ttfamily virtual Q\+String Cu\+Magic\+I\+::format (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\begin{DoxyReturn}{Returns}
+a string defining the format for numbers, e.\+g. \char`\"{}\%.\+2f\char`\"{}, \char`\"{}\%d\char`\"{} or an empty string if the {\itshape format} key in the configuration data is not defined. 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a31bb0e89fafa61a5a5edf22183079f93}.
+
+\mbox{\label{classCuMagicI_ad8a72ff58d554d805d11d12fff00ee0f}} 
+\index{CuMagicI@{CuMagicI}!get\_target\_object@{get\_target\_object}}
+\index{get\_target\_object@{get\_target\_object}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{get\_target\_object()}
+{\footnotesize\ttfamily virtual Q\+Object$\ast$ Cu\+Magic\+I\+::get\+\_\+target\+\_\+object (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\begin{DoxyReturn}{Returns}
+the Qt object (Q\+Object, Q\+Widget, ...) used in Cu\+Magic\+Plugin\+Interface\+::get\+Magic as the target where read values are displayed 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a40756286ca78b3c9f0cd0eee2b4a0ae6}.
+
+\mbox{\label{classCuMagicI_abea38a466f3f08ec7935140139ba6904}} 
+\index{CuMagicI@{CuMagicI}!getContext@{getContext}}
+\index{getContext@{getContext}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{getContext()}
+{\footnotesize\ttfamily virtual Cu\+Context$\ast$ Cu\+Magic\+I\+::get\+Context (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\begin{DoxyReturn}{Returns}
+a pointer to the Cu\+Context in use, which is nullptr if init has not been called yet 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_afa668cd455bffd2340f90482849836c2}.
+
+\mbox{\label{classCuMagicI_a20faf04737ee727850a4e2ba34487385}} 
+\index{CuMagicI@{CuMagicI}!map@{map}}
+\index{map@{map}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{map()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::map (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{idx,  }\item[{const Q\+String \&}]{onam }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a00fef6d10009a7b63c71c24b12ae0b2e}.
+
+\mbox{\label{classCuMagicI_aa744888f56236fe505909f70a38b2f1e}} 
+\index{CuMagicI@{CuMagicI}!map@{map}}
+\index{map@{map}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{map()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::map (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{idx,  }\item[{Q\+Object $\ast$}]{obj,  }\item[{const Q\+String \&}]{prop = {\ttfamily QString()} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_af553c7d3329d7aa1016f03d8d3bdf7a0}.
+
+\mbox{\label{classCuMagicI_a53dd27becdfc4f08070f257adabe06cb}} 
+\index{CuMagicI@{CuMagicI}!mapProperty@{mapProperty}}
+\index{mapProperty@{mapProperty}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{mapProperty()}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::map\+Property (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{from,  }\item[{const Q\+String \&}]{to }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & a property name known to the plugin (e.\+g. $\ast$value, text, min, max $\ast$) \\
+\hline
+{\em to} & a property name known to the object (e.\+g. {\itshape min -\/-\/$>$ y\+Lower\+Bound, max -\/-\/$>$ y\+Upper\+Bound, text -\/-\/$>$ html} )\\
+\hline
+\end{DoxyParams}
+This method can be used to tell \doxyref{Cu\+Magic}{p.}{classCuMagic} to operate on the property {\itshape to} instead of {\itshape from}. {\itshape from} is one of the properties {\itshape known by \doxyref{Cu\+Magic}{p.}{classCuMagic}}, such as {\itshape min, max, value, text, ...} 
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a0590af0f2cded4e4d7da674a8d4b589b}.
+
+\mbox{\label{classCuMagicI_a49756c7e4043909879370d0448af47ab}} 
+\index{CuMagicI@{CuMagicI}!propMappedFrom@{propMappedFrom}}
+\index{propMappedFrom@{propMappedFrom}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{propMappedFrom()}
+{\footnotesize\ttfamily virtual Q\+String Cu\+Magic\+I\+::prop\+Mapped\+From (\begin{DoxyParamCaption}\item[{const char $\ast$}]{to }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em to} & the name of the property known to the object, associated by the map\+Property method \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the property name known to \doxyref{Cu\+Magic}{p.}{classCuMagic} that was mapped to {\itshape to} by map\+Property 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_ae9098a5609db13928597fc49bbc078ba}.
+
+\mbox{\label{classCuMagicI_a73715dfa784a58d1fcd313831f40c4bb}} 
+\index{CuMagicI@{CuMagicI}!propMappedTo@{propMappedTo}}
+\index{propMappedTo@{propMappedTo}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{propMappedTo()}
+{\footnotesize\ttfamily virtual Q\+String Cu\+Magic\+I\+::prop\+Mapped\+To (\begin{DoxyParamCaption}\item[{const char $\ast$}]{from }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & the property name known to the \doxyref{Cu\+Magic}{p.}{classCuMagic}, f.\+e. min, max, value, text, format, display\+\_\+unit \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the property name to which {\itshape from} has been associated by map\+Property 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a0833823c530545ff2d2fcfca415942f1}.
+
+\mbox{\label{classCuMagicI_a857b05bef7b9d912b99b43713b6a089b}} 
+\index{CuMagicI@{CuMagicI}!sendData@{sendData}}
+\index{sendData@{sendData}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{sendData()}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::send\+Data (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{da }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em da} & the data \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a9efe69ca8c56eefd81a10a272f1cb11d}.
+
+\mbox{\label{classCuMagicI_a4d97129eb26bf1e88bf7e4942e5d827f}} 
+\index{CuMagicI@{CuMagicI}!setErrorValue@{setErrorValue}}
+\index{setErrorValue@{setErrorValue}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{setErrorValue()}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::set\+Error\+Value (\begin{DoxyParamCaption}\item[{const Cu\+Variant \&}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & the value to show in case of error \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a707c11b4705fd804418b7b508e821902}.
+
+\mbox{\label{classCuMagicI_a4c2f70fb2789a7e47e56561cef3fa180}} 
+\index{CuMagicI@{CuMagicI}!setSource@{setSource}}
+\index{setSource@{setSource}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{setSource()}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::set\+Source (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{src }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\begin{DoxyNote}{Note}
+Calling this method replaces the existing source with the new ones 
+\end{DoxyNote}
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_ac56148823033bda0e20bd6e6e3d4201e}.
+
+\mbox{\label{classCuMagicI_a865b9767b2bfd12505fb59678d55c851}} 
+\index{CuMagicI@{CuMagicI}!source@{source}}
+\index{source@{source}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{source()}
+{\footnotesize\ttfamily virtual Q\+String Cu\+Magic\+I\+::source (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_a2e4b1edbee49ba627b0510bd69f1caeb}.
+
+\mbox{\label{classCuMagicI_acaf7c4ccad1e8132152455e91b9d8ea2}} 
+\index{CuMagicI@{CuMagicI}!unsetSource@{unsetSource}}
+\index{unsetSource@{unsetSource}!CuMagicI@{CuMagicI}}
+\doxysubsubsection{unsetSource()}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+I\+::unset\+Source (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Magic} \doxyref{}{p.}{classCuMagic_aca7cb4eefc1d81ac7fb7aea7aa0f8c65}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cumagicplugininterface.\+h}\end{DoxyCompactItemize}

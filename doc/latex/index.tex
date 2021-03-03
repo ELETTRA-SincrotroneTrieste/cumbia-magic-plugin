@@ -1,0 +1,38 @@
+\begin{DoxyParagraph}{Introduction}
+This plugin provides objects called \doxyref{Cu\+Magic}{p.}{classCuMagic} that can be {\itshape attached} to normal Qt widgets (or simple Q\+Objects) and display values read from cumbia on them. A Qt {\itshape property} determines how to show the data. A {\itshape custom property} may be specified. Otherwise, {\itshape value}, {\itshape text} and other default ones are searched for.
+\end{DoxyParagraph}
+\doxysection{cases}\label{index_Use}
+\doxysubsection{}\label{_}
+\begin{DoxyItemize}
+\item cumbia scalar data -\/ scalar property\+: the scalar value is {\itshape set} on the property \item cumbia vector data and no index mapping -\/ scalar property\+: {\itshape the first element is set} on the property \item cumbia vector data and one or more indexes specified -\/ scalar property\+: {\itshape the first specified index is used}\end{DoxyItemize}
+\begin{DoxyItemize}
+\item cumbia scalar data -\/ vector property (Q\+Variant\+List)\+: the value is set on element 0 of the vector \item cumbia spectrum data and no indexes specified\+: the whole vector is set on the property \item cumbia spectrum data with indexes specified\+: the set of indexes determines which values are taken from the vector and {\itshape set} on the property.\end{DoxyItemize}
+\doxysubsection{}\label{_}
+\begin{DoxyItemize}
+\item cumbia scalar data\+: can only be used in context number 1. \item cumbia spectrum data\+: through index mapping, each element of the data array can be displayed in the specified object\end{DoxyItemize}
+Please read \doxyref{Cu\+Magic\+Plugin\+Interface}{p.}{classCuMagicPluginInterface} documentation and the {\itshape magicdemo} example under the examples subfolder of the plugin directory.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{    QObject *magic\_obj;}
+\DoxyCodeLine{    CuMagicPluginInterface *magic\_i = CuMagicPluginInterface* get\_instance(cu\_pool, fpool, \&magic\_obj);}
+\DoxyCodeLine{    \textcolor{keywordflow}{if}(!magic\_i) \textcolor{comment}{// initialize plugin once}}
+\DoxyCodeLine{            perr(\textcolor{stringliteral}{"CuMagicPluginInterface: failed to load plugin \(\backslash\)"libcumbia-\/magic-\/plugin.so\(\backslash\)""});}
+\DoxyCodeLine{        \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{        QuLabel label = \textcolor{keyword}{new} QuLabel(\textcolor{keyword}{this});}
+\DoxyCodeLine{        magic\_i-\/>new\_magic(label, \textcolor{stringliteral}{"\$1/double\_scalar"});}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+\begin{DoxyParagraph}{Warning}
+Do not forget to call
+\end{DoxyParagraph}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{m\_multir-\/>unsetSources}
+\end{DoxyCode}
+
+
+before the application exits. In fact, if the plugin is destroyed {\itshape after} Cumbia, the behavior is undefined. 

@@ -1,0 +1,100 @@
+\doxysection{Cu\+Magic\+Plugin Class Reference}
+\label{classCuMagicPlugin}\index{CuMagicPlugin@{CuMagicPlugin}}
+
+
+{\ttfamily \#include $<$cumagic.\+h$>$}
+
+Inheritance diagram for Cu\+Magic\+Plugin\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classCuMagicPlugin}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+Magic\+Plugin} (Q\+Object $\ast$parent=nullptr)
+\item 
+virtual \textbf{ $\sim$\+Cu\+Magic\+Plugin} ()
+\item 
+\textbf{ Cu\+MagicI} $\ast$ \textbf{ new\+\_\+magic} (Q\+Object $\ast$target, const Q\+String \&source=Q\+String(), const Q\+String \&property=Q\+String()) const
+\begin{DoxyCompactList}\small\item\em \doxyref{Cu\+Magic\+Plugin\+::new\+\_\+magic}{p.}{classCuMagicPlugin_a99fd2398b0b98472c2f210546f989bfb} create a new \doxyref{Cu\+Magic}{p.}{classCuMagic} instance. \end{DoxyCompactList}\item 
+void \textbf{ init} (Cumbia\+Pool $\ast$cumbia\+\_\+pool, const Cu\+Controls\+Factory\+Pool \&fpool)
+\begin{DoxyCompactList}\small\item\em Initialise the multi reader with mixed engine mode and the read mode. \end{DoxyCompactList}\item 
+const Q\+Object $\ast$ \textbf{ get\+\_\+qobject} () const
+\begin{DoxyCompactList}\small\item\em returns a reference to this object, so that it can be used as a Q\+Object to benefit from signal/slot connections. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuMagicPlugin_aa4c3892bba58ad026a79efda0f341ae8}} 
+\index{CuMagicPlugin@{CuMagicPlugin}!CuMagicPlugin@{CuMagicPlugin}}
+\index{CuMagicPlugin@{CuMagicPlugin}!CuMagicPlugin@{CuMagicPlugin}}
+\doxysubsubsection{CuMagicPlugin()}
+{\footnotesize\ttfamily Cu\+Magic\+Plugin\+::\+Cu\+Magic\+Plugin (\begin{DoxyParamCaption}\item[{Q\+Object $\ast$}]{parent = {\ttfamily nullptr} }\end{DoxyParamCaption})}
+
+\mbox{\label{classCuMagicPlugin_a02fea98fd10483effbb7fe0850077a77}} 
+\index{CuMagicPlugin@{CuMagicPlugin}!````~CuMagicPlugin@{$\sim$CuMagicPlugin}}
+\index{````~CuMagicPlugin@{$\sim$CuMagicPlugin}!CuMagicPlugin@{CuMagicPlugin}}
+\doxysubsubsection{$\sim$CuMagicPlugin()}
+{\footnotesize\ttfamily Cu\+Magic\+Plugin\+::$\sim$\+Cu\+Magic\+Plugin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\label{classCuMagicPlugin_ae541c928d4c2f3235030a968dbacaa17}} 
+\index{CuMagicPlugin@{CuMagicPlugin}!get\_qobject@{get\_qobject}}
+\index{get\_qobject@{get\_qobject}!CuMagicPlugin@{CuMagicPlugin}}
+\doxysubsubsection{get\_qobject()}
+{\footnotesize\ttfamily const Q\+Object $\ast$ Cu\+Magic\+Plugin\+::get\+\_\+qobject (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \textbf{ Cu\+Magic\+Plugin\+Interface} \doxyref{}{p.}{classCuMagicPluginInterface_a7695f306929c25e0bc01e3a545641f52}.
+
+\mbox{\label{classCuMagicPlugin_aa6b6d63558f3f311b398729f9f3dcc4e}} 
+\index{CuMagicPlugin@{CuMagicPlugin}!init@{init}}
+\index{init@{init}!CuMagicPlugin@{CuMagicPlugin}}
+\doxysubsubsection{init()}
+{\footnotesize\ttfamily void Cu\+Magic\+Plugin\+::init (\begin{DoxyParamCaption}\item[{Cumbia\+Pool $\ast$}]{cumbia\+\_\+pool,  }\item[{const Cu\+Controls\+Factory\+Pool \&}]{fpool }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em cumbia} & a reference to the Cumbia\+Pool engine chooser \\
+\hline
+{\em r\+\_\+fac} & the Cu\+Controls\+Factory\+Pool factory chooser \\
+\hline
+\end{DoxyParams}
+
+
+Implements \textbf{ Cu\+Magic\+Plugin\+Interface} \doxyref{}{p.}{classCuMagicPluginInterface_a755f7f417803d25784c825bd46e77c03}.
+
+
+
+References Cu\+Magic\+Plugin\+Private\+::cu\+\_\+pool, and Cu\+Magic\+Plugin\+Private\+::fpoo.
+
+\mbox{\label{classCuMagicPlugin_a99fd2398b0b98472c2f210546f989bfb}} 
+\index{CuMagicPlugin@{CuMagicPlugin}!new\_magic@{new\_magic}}
+\index{new\_magic@{new\_magic}!CuMagicPlugin@{CuMagicPlugin}}
+\doxysubsubsection{new\_magic()}
+{\footnotesize\ttfamily \textbf{ Cu\+MagicI} $\ast$ Cu\+Magic\+Plugin\+::new\+\_\+magic (\begin{DoxyParamCaption}\item[{Q\+Object $\ast$}]{target,  }\item[{const Q\+String \&}]{source = {\ttfamily QString()},  }\item[{const Q\+String \&}]{property = {\ttfamily QString()} }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+See \doxyref{Cu\+Magic}{p.}{classCuMagic} constructor documentation
+
+\begin{DoxyNote}{Note}
+{\itshape source} and {\itshape property} are optional and can be specified later on the \doxyref{Cu\+Magic}{p.}{classCuMagic} object 
+\end{DoxyNote}
+
+
+Implements \textbf{ Cu\+Magic\+Plugin\+Interface} \doxyref{}{p.}{classCuMagicPluginInterface_a9dab1cbc275602390203d6f04c9493f5}.
+
+
+
+References Cu\+Magic\+Plugin\+Private\+::cu\+\_\+pool, and Cu\+Magic\+Plugin\+Private\+::fpoo.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cumagic.\+h}\item 
+\textbf{ cumagic.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,156 @@
+\doxysection{Cu\+Magic\+Plugin\+Interface Class Reference}
+\label{classCuMagicPluginInterface}\index{CuMagicPluginInterface@{CuMagicPluginInterface}}
+
+
+Interface for a plugin implementing reader that connects to multiple quantities.  
+
+
+
+
+{\ttfamily \#include $<$cumagicplugininterface.\+h$>$}
+
+Inheritance diagram for Cu\+Magic\+Plugin\+Interface\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classCuMagicPluginInterface}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \textbf{ $\sim$\+Cu\+Magic\+Plugin\+Interface} ()
+\item 
+virtual void \textbf{ init} (Cumbia\+Pool $\ast$cumbia\+\_\+pool, const Cu\+Controls\+Factory\+Pool \&fpool)=0
+\begin{DoxyCompactList}\small\item\em Initialise the multi reader with mixed engine mode and the read mode. \end{DoxyCompactList}\item 
+virtual const Q\+Object $\ast$ \textbf{ get\+\_\+qobject} () const =0
+\begin{DoxyCompactList}\small\item\em To provide the necessary signals aforementioned, the implementation must derive from Qt Q\+Object. This method returns the subclass as a Q\+Object, so that the client can connect to the multi reader signals. \end{DoxyCompactList}\item 
+virtual \textbf{ Cu\+MagicI} $\ast$ \textbf{ new\+\_\+magic} (Q\+Object $\ast$target, const Q\+String \&source=Q\+String(), const Q\+String \&property=Q\+String()) const =0
+\begin{DoxyCompactList}\small\item\em get\+\_\+magic returns a new \doxyref{Cu\+MagicI}{p.}{classCuMagicI} object with target the given Q\+Object and source \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \textbf{ Cu\+Magic\+Plugin\+Interface} $\ast$ \textbf{ get\+\_\+instance} (Cumbia\+Pool $\ast$cu\+\_\+poo, const Cu\+Controls\+Factory\+Pool \&fpoo, Q\+Object $\ast$plugin\+\_\+qob)
+\begin{DoxyCompactList}\small\item\em \doxyref{Cu\+Magic\+Plugin\+Interface\+::get\+\_\+instance}{p.}{classCuMagicPluginInterface_ac15c589ce48f03bb5a7f0d1221e420d3} returns a new instance of the plugin. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr const char \textbf{ file\+\_\+name} [32] = \char`\"{}libcumbia-\/magic-\/plugin.\+so\char`\"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyItemize}
+\item Readings can be sequential or parallel (see the init method). Sequential readings must notify when a reading is performed and when a complete read cycle is over, providing the read data through two Qt signals\+: on\+New\+Data(const Cu\+Data\& da) and on\+Seq\+Read\+Complete(const Q\+List$<$\+Cu\+Data $>$\& data). Parallel readings must notify only when a new result is available, emitting the on\+New\+Data signal.\end{DoxyItemize}
+\begin{DoxyItemize}
+\item A multi reader must be initialised with the init method, that determines what is the engine used to read and whether the reading is sequential or parallel by means of the read\+\_\+mode parameter. If the mode is negative, the reading is parallel and the refresh mode is determined by the controls factory, as usual. If the mode is non negative {\itshape it must correspond to the {\bfseries{manual refresh mode}} of the underlying engine.} For example, Cu\+T\+Reader\+::\+Manual must be specified for the Tango control system engine in order to let the multi reader use an internal poller to read the attributes sequentially. \end{DoxyItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuMagicPluginInterface_a798a52607a9359a47f3bfe8a4f74bd4b}} 
+\index{CuMagicPluginInterface@{CuMagicPluginInterface}!````~CuMagicPluginInterface@{$\sim$CuMagicPluginInterface}}
+\index{````~CuMagicPluginInterface@{$\sim$CuMagicPluginInterface}!CuMagicPluginInterface@{CuMagicPluginInterface}}
+\doxysubsubsection{$\sim$CuMagicPluginInterface()}
+{\footnotesize\ttfamily virtual Cu\+Magic\+Plugin\+Interface\+::$\sim$\+Cu\+Magic\+Plugin\+Interface (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\label{classCuMagicPluginInterface_ac15c589ce48f03bb5a7f0d1221e420d3}} 
+\index{CuMagicPluginInterface@{CuMagicPluginInterface}!get\_instance@{get\_instance}}
+\index{get\_instance@{get\_instance}!CuMagicPluginInterface@{CuMagicPluginInterface}}
+\doxysubsubsection{get\_instance()}
+{\footnotesize\ttfamily static \textbf{ Cu\+Magic\+Plugin\+Interface}$\ast$ Cu\+Magic\+Plugin\+Interface\+::get\+\_\+instance (\begin{DoxyParamCaption}\item[{Cumbia\+Pool $\ast$}]{cu\+\_\+poo,  }\item[{const Cu\+Controls\+Factory\+Pool \&}]{fpoo,  }\item[{Q\+Object $\ast$}]{plugin\+\_\+qob }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em cu\+\_\+poo} & pointer to a previously allocated Cumbia\+Pool \\
+\hline
+{\em fpoo} & const reference to Cu\+Controls\+Factory\+Pool \\
+\hline
+{\em mode} & one of Cu\+Magic\+Plugin\+Interface\+::\+Mode modes \\
+\hline
+{\em plugin\+\_\+qob} & a pointer to a Q\+Object, will contain this plugin {\itshape as Q\+Object} (for signals and slots) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+an instance of the plugin or nullptr in case of failure.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Repeated calls will return the same plugin instance (by Qt plugin nature) Use either get\+Multi\+Sequential\+Reader or get\+Multi\+Concurrent\+Reader to get new instances of multi readers instead 
+\end{DoxyNote}
+
+
+References file\+\_\+name, and init().
+
+\mbox{\label{classCuMagicPluginInterface_a7695f306929c25e0bc01e3a545641f52}} 
+\index{CuMagicPluginInterface@{CuMagicPluginInterface}!get\_qobject@{get\_qobject}}
+\index{get\_qobject@{get\_qobject}!CuMagicPluginInterface@{CuMagicPluginInterface}}
+\doxysubsubsection{get\_qobject()}
+{\footnotesize\ttfamily virtual const Q\+Object$\ast$ Cu\+Magic\+Plugin\+Interface\+::get\+\_\+qobject (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\begin{DoxyReturn}{Returns}
+The object implementing \doxyref{Cu\+MagicI}{p.}{classCuMagicI} as a Q\+Object. 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic\+Plugin} \doxyref{}{p.}{classCuMagicPlugin_ae541c928d4c2f3235030a968dbacaa17}.
+
+\mbox{\label{classCuMagicPluginInterface_a755f7f417803d25784c825bd46e77c03}} 
+\index{CuMagicPluginInterface@{CuMagicPluginInterface}!init@{init}}
+\index{init@{init}!CuMagicPluginInterface@{CuMagicPluginInterface}}
+\doxysubsubsection{init()}
+{\footnotesize\ttfamily virtual void Cu\+Magic\+Plugin\+Interface\+::init (\begin{DoxyParamCaption}\item[{Cumbia\+Pool $\ast$}]{cumbia\+\_\+pool,  }\item[{const Cu\+Controls\+Factory\+Pool \&}]{fpool }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em cumbia} & a reference to the Cumbia\+Pool engine chooser \\
+\hline
+{\em r\+\_\+fac} & the Cu\+Controls\+Factory\+Pool factory chooser \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \textbf{ Cu\+Magic\+Plugin} \doxyref{}{p.}{classCuMagicPlugin_aa6b6d63558f3f311b398729f9f3dcc4e}.
+
+
+
+Referenced by get\+\_\+instance().
+
+\mbox{\label{classCuMagicPluginInterface_a9dab1cbc275602390203d6f04c9493f5}} 
+\index{CuMagicPluginInterface@{CuMagicPluginInterface}!new\_magic@{new\_magic}}
+\index{new\_magic@{new\_magic}!CuMagicPluginInterface@{CuMagicPluginInterface}}
+\doxysubsubsection{new\_magic()}
+{\footnotesize\ttfamily virtual \textbf{ Cu\+MagicI}$\ast$ Cu\+Magic\+Plugin\+Interface\+::new\+\_\+magic (\begin{DoxyParamCaption}\item[{Q\+Object $\ast$}]{target,  }\item[{const Q\+String \&}]{source = {\ttfamily QString()},  }\item[{const Q\+String \&}]{property = {\ttfamily QString()} }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em parent} & the object used as target to display the read values \\
+\hline
+{\em source} & the source of the readings \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a {\itshape new} instance of an object implementing \doxyref{Cu\+MagicI}{p.}{classCuMagicI} interface 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+Magic\+Plugin} \doxyref{}{p.}{classCuMagicPlugin_a99fd2398b0b98472c2f210546f989bfb}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\label{classCuMagicPluginInterface_a8b980b93577b03ac22f592cd87660f61}} 
+\index{CuMagicPluginInterface@{CuMagicPluginInterface}!file\_name@{file\_name}}
+\index{file\_name@{file\_name}!CuMagicPluginInterface@{CuMagicPluginInterface}}
+\doxysubsubsection{file\_name}
+{\footnotesize\ttfamily constexpr const char Cu\+Magic\+Plugin\+Interface\+::file\+\_\+name[32] = \char`\"{}libcumbia-\/magic-\/plugin.\+so\char`\"{}\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+
+
+Referenced by get\+\_\+instance().
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cumagicplugininterface.\+h}\end{DoxyCompactItemize}
