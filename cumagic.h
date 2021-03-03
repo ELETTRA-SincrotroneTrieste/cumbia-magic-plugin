@@ -97,7 +97,11 @@ private:
         else if(converted && tdt == Vector) {
             QVector<T> out;
             if(d->v_idxs.isEmpty()) // the whole vector
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
                 out = QVector<T>(vi.begin(), vi.end());
+#else
+                out = QVector<T>::fromStdVector(vi);
+#endif
             else  { // pick desired indexes
                 foreach( size_t i, d->v_idxs)
                     if(vi.size() > i)
@@ -108,7 +112,11 @@ private:
         else if(converted && tdt == List) {
             QList<T> out;
             if(d->v_idxs.isEmpty()) // the whole vector
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
                 out = QList<T>(vi.begin(), vi.end());
+#else
+                out = QVector<T>::fromStdVector(vi).toList();
+#endif
             else  { // pick desired indexes
                 foreach( size_t i, d->v_idxs)
                     if(vi.size() > i)
