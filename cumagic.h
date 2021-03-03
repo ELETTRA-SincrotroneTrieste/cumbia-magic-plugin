@@ -30,6 +30,7 @@ public:
     QString format, display_unit;
 };
 
+
 class CuMagic : public QObject, public CuMagicI, public CuDataListener {
     Q_OBJECT
 public:

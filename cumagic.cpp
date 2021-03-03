@@ -57,6 +57,7 @@ void CuMagicPlugin::init(CumbiaPool *cumbia_pool, const CuControlsFactoryPool &f
  * target object, in this order:
  *
  * \li value
+ * \li checked
  * \li text
  *
  * \par Error handling
@@ -352,7 +353,7 @@ QString CuMagic::m_get_idxs(const QString &src) const {
     d->v_idxs.clear();
     if(m.capturedTexts().size() > 1) {
         QString s = m.capturedTexts().at(1);
-        foreach(const QString &t, s.split(',', Qt::SkipEmptyParts) ) {
+        foreach(const QString &t, s.split(',') ) {
             if(!t.contains('-') && t.toInt(&ok) >= 0 && ok)
                 d->v_idxs << t.trimmed().toInt(&ok);
             else if(t.contains(re2) && ok) {
@@ -440,9 +441,8 @@ void CuMagic::m_err_msg_set(QObject *o, const QString &msg, bool err) {
 
 QString CuMagic::m_idxs_to_string() const {
     QString s;
-    int idx, i = 0, j = 0;
+    int i = 0, j = 0;
     while(i < d->v_idxs.size()) {
-        idx = d->v_idxs[i];
         j = i;
         while(j + 1 < d->v_idxs.size() && d->v_idxs[j+1] - d->v_idxs[j] == 1)
             j++;

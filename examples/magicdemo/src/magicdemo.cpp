@@ -92,7 +92,11 @@ Magicdemo::Magicdemo(CumbiaPool *cumbia_pool, QWidget *parent) :
         << mp.userType() << "type name" << mp.typeName() << "QMetaType::type from name" << QMetaType::type(mp.typeName())
         << "type from meta type" << QMetaType::type(mp.typeName());
     std::vector<double> v1{ 1, 2, 2.3, 2.7, 3.45 };
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     QList<double> vl(v1.begin(), v1.end());
+#else
+    QList<double> vl = QVector<double>::fromStdVector(v1).toList();
+#endif
     qDebug() << __PRETTY_FUNCTION__ << "setting property my data " << vl;
     QVariant v = QVariant::fromValue(v1);
     bool ok = ui->plot->setProperty("myData", v);

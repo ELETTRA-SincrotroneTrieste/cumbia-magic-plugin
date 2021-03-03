@@ -120,22 +120,75 @@ public:
 };
 
 
-/** \brief Interface for a plugin implementing reader that connects to multiple quantities.
+/*!
+ * \mainpage Add some cumbia magic to simple Qt widgets
  *
- * \ingroup plugins
+ * \section Introduction
  *
- * \li Readings can be sequential or parallel (see the init method). Sequential readings must notify when a reading is performed
- *     and when a complete read cycle is over, providing the read data through two Qt signals: onNewData(const CuData& da) and
- *     onSeqReadComplete(const QList<CuData >& data). Parallel readings must notify only when a new result is available, emitting
- *     the onNewData signal.
+ * \code
+   #include <cumagicplugininterface.h>
+   // load magic plugin
+   QObject *magic_plo;
+   CuMagicPluginInterface *plugin_i = CuMagicPluginInterface::get_instance(cumbia_pool, m_ctrl_factory_pool, magic_plo);
+   if(!plugin_i)
+        perr("MyMagicApp: failed to load plugin \"%s\"", CuMagicPluginInterface::file_name);
+    else { // magic here
+    }
+ * \endcode
  *
- * \li A multi reader must be initialised with the init method, that determines what is the engine used to read and whether the reading
- *     is sequential or parallel by means of the read_mode parameter. If the mode is negative, the reading is parallel and the
- *     refresh mode is determined by the controls factory, as usual. If the mode is non negative <em>it must correspond
- *     to the <strong>manual refresh mode</strong> of the underlying engine.</em>
- *     For example, CuTReader::Manual must be specified for the Tango control system engine in order to let the multi reader
- *     use an internal poller to read the attributes sequentially.
+ * The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget
+ * (or even a simple QObject) through its properties. For example, a scalar number can be displayed as text
+ * on either a QLineEdit or QLabel, as a number in a QDoubleSpinBox or a QLCDNumber or set on a progress bar.
  *
+ * \code
+   CuMagicI *ma0 = plugin_i->new_magic(ui->lcdNumber, "$1/double_scalar");
+   CuMagicI *ma1 = plugin_i->new_magic(ui->progressBar, "$1/short_scalar");
+ * \endcode
+ *
+ * Likewise, an element of an array can be picked and used as a scalar:
+ *
+ * \code
+ * CuMagicI *ma2 = plugin_i->new_magic(ui->x0_2, "$1/double_spectrum[0]");
+ * \endcode
+ *
+ * A subset of elements of a vectorial quantity can be defined and displayed on a spectrum oriented widget,
+ * such as a plot:
+ *
+ * \code
+    // Let a custom plot be defined as this:
+    class MyDisplayVector : public QuPlotBase {
+        Q_OBJECT
+        Q_PROPERTY(QList<double> myData READ myData WRITE setMyData) // property to access myData
+    public:
+        MyDisplayVector(QWidget *parent); // constructor
+        void setMyData(const QList<double> &y);  // update plot curve
+        QList<double> myData() const; // return the curve y values
+    // ...
+    };
+
+   // ui->plot is a MyDisplayVector, derived from QuPlotBase
+   // pick values at indexes 1 to 10, then other three times the element 10, elements 15,16 and finally 20 to 26
+   // use the "myData" property on the plot for updates
+   CuMagicI *ma3 = plugin_i->new_magic(ui->plot, "$1/double_spectrum_ro[1-10,10,10,10,15,16,20-26]", "myData");
+   // if min and max configuration properties are available, use them to set yLowerBound and yUpperBound on the
+   // plot, respectively
+   ma3->mapProperty("min", "yLowerBound");
+   ma3->mapProperty("max", "yUpperBound");
+ * \endcode
+ *
+ * \subsection Default properties
+ *
+ * Elements of a vectorial quantity can be displayed each on dedicated widgets:
+ *
+ * \code
+    CuMagicI *ma_v_spinb = plugin_i->new_magic(this, "$1/double_spectrum");
+    // "x0", ... "x4" are the object names of five QDoubleSpinBox
+    ma_v_spinb->map(0, "x0"); // element 0 of double_spectrum is displayed on QDoubleSpinBox "x0"
+    ma_v_spinb->map(1, "x1");
+    ma_v_spinb->map(2, "x2");
+    ma_v_spinb->map(3, "x3");
+    ma_v_spinb->map(4, "x4");
+ * \endcode
  */
 class CuMagicPluginInterface
 {
