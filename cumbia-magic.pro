@@ -71,7 +71,7 @@ unix:!android-g++ {
 DOC_DIR = $${QUMBIA_PLUGINS_DOCDIR}
 doc.commands = \
     doxygen \
-    Doxyfile; cp doc/html/* docs
+    Doxyfile; mkdir docs && cp doc/html/* docs
 doc.files = doc/*
 doc.path = $${DOC_DIR}
 
