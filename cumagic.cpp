@@ -137,10 +137,17 @@ void CuMagic::sendData(const CuData &da) {
 }
 
 void CuMagic::setSource(const QString &src) {
-    QString s = m_get_idxs(src);
+    QString s = m_get_idxs(src); // s has "\[([\d,\-]+)\]" removed
     qDebug() << __PRETTY_FUNCTION__ << src << "-->" << s << "idxs" << d->v_idxs;
     CuControlsReaderA *r = d->context->replace_reader(s.toStdString(), this);
-    if(r) r->setSource(s);
+    if(r)  r->setSource(s);
+}
+
+QString CuMagic::source() const {
+    CuControlsReaderA *r = d->context->getReader();
+    QString idx_selector = m_idxs_to_string();
+    if(idx_selector.size()) idx_selector = "[" + idx_selector + "]";
+    return  r != nullptr ? r->source() + idx_selector : "";
 }
 
 void CuMagic::unsetSource() {
@@ -155,14 +162,9 @@ const QObject *CuMagicPlugin::get_qobject() const {
     return this;
 }
 
-QString CuMagic::source() const {
-    CuControlsReaderA *r = d->context->getReader();
-    return  r != nullptr ? r->source() : "";
-}
-
 void CuMagic::onUpdate(const CuData &data) {
     bool err = data["err"].toBool();
-    std::string msg = data["msg"].toString();
+    std::string msg = source().toStdString() + "\n" + data["msg"].toString();
     const CuVariant &dv = data["value"];
     const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
 
@@ -303,8 +305,8 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                     qva = m_convert<bool>(v);
                 } break;
                 case QVariant::String: {
-                    std::string s = v.toString(&converted, d->format.toStdString().c_str());
-                    qva = QuString(s);
+//                    std::string s = v.toString(&converted, d->format.toStdString().c_str());
+                    qva = m_str_convert(v);
                 } break;
                 case QVariant::StringList: {
                     qva = QuStringList(v);
@@ -351,7 +353,7 @@ QString CuMagic::m_get_idxs(const QString &src) const {
     if(m.capturedTexts().size() > 1) {
         QString s = m.capturedTexts().at(1);
         foreach(const QString &t, s.split(',', Qt::SkipEmptyParts) ) {
-            if(!t.contains('-') && t.toInt(&ok) && ok)
+            if(!t.contains('-') && t.toInt(&ok) >= 0 && ok)
                 d->v_idxs << t.trimmed().toInt(&ok);
             else if(t.contains(re2) && ok) {
                 QRegularExpressionMatch m2 = re2.match(t);
@@ -370,6 +372,29 @@ QString CuMagic::m_get_idxs(const QString &src) const {
     }
     QString s(src);
     return s.remove(re);
+}
+
+QVariant CuMagic::m_str_convert(const CuVariant &v, CuMagic::TargetDataType tdt) {
+    int idx;
+    QVariant qva;
+    bool converted;
+    d->v_idxs.size() > 0 ? idx = d->v_idxs[0] : idx = 0;
+    QuStringList vi = v.toStringVector(&converted);
+    if(converted && tdt == Scalar && idx < vi.size()) {
+        qva = QVariant(vi[idx]);
+    }
+    else if(converted && ( tdt == Vector || tdt == List)  ) {
+        QStringList out;
+        if(d->v_idxs.isEmpty()) // the whole vector
+            out = vi;
+        else  { // pick desired indexes
+            foreach(int i, d->v_idxs)
+                if(vi.size() > i)
+                    out << vi[i];
+        }
+        tdt == List ? qva = QVariant::fromValue(out) : qva = QVariant::fromValue(out.toVector());
+    }
+    return qva;
 }
 
 void CuMagic::m_configure(const CuData &da) {
@@ -411,7 +436,26 @@ void CuMagic::m_err_msg_set(QObject *o, const QString &msg, bool err) {
     }
     if(w) w->setToolTip(msg);
     else if(err) perr("CuMagic: error: %s", qstoc(msg));
+}
 
+QString CuMagic::m_idxs_to_string() const {
+    QString s;
+    int idx, i = 0, j = 0;
+    while(i < d->v_idxs.size()) {
+        idx = d->v_idxs[i];
+        j = i;
+        while(j + 1 < d->v_idxs.size() && d->v_idxs[j+1] - d->v_idxs[j] == 1)
+            j++;
+        if(j > i && j <= d->v_idxs.size()) {
+            s += QString("%1-%2").arg(d->v_idxs[i]).arg(d->v_idxs[j]);
+        }
+        else
+            s += QString("%1").arg(d->v_idxs[i]);
+        if(j < d->v_idxs.size() - 1)
+            s += ",";
+        i = j + 1;
+    }
+    return s;
 }
 
 #if QT_VERSION < 0x050000

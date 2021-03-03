@@ -6,6 +6,8 @@
 #include <cumagicplugininterface.h>
 #include <cudata.h>
 #include <cudatalistener.h>
+#include <qustring.h>
+#include <qustringlist.h>
 
 
 class CuMagicPluginPrivate;
@@ -92,14 +94,15 @@ private:
         return ok;
     }
 
+    QVariant m_str_convert(const CuVariant& v, TargetDataType tdt = Scalar);
+
     template <typename T> QVariant m_convert(const CuVariant& v, TargetDataType tdt = Scalar) {
         size_t idx;
-
         QVariant qva;
         d->v_idxs.size() > 0 ? idx = d->v_idxs[0] : idx = 0;
         std::vector<T> vi; // convert to vector always
         bool converted = v.toVector<T>(vi) && vi.size() > idx;
-        if(converted && tdt == Scalar) {
+        if(converted && tdt == Scalar && idx < vi.size()) {
             qva = QVariant(vi[idx]);
         }
         else if(converted && tdt == Vector) {
@@ -129,6 +132,7 @@ private:
 
     void m_configure(const CuData& da);
     void m_err_msg_set(QObject* o, const QString& msg, bool err);
+    QString m_idxs_to_string() const;
 };
 
 /** \mainpage This plugin allows magic
