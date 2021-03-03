@@ -73,11 +73,50 @@ public:
     virtual void map(size_t idx, QObject *obj, const QString &prop = QString()) = 0;
 
     /*!
+     * \brief mapProperty instruct CuMagic to use property *to* instead of *from*
+     * \param from a property name known to the plugin (e.g. *value, text, min, max *)
+     * \param to a property name known to the object (e.g. *min --> yLowerBound, max --> yUpperBound, text --> html* )
+     *
+     * This method can be used to tell CuMagic to operate on the property *to* instead of *from*.
+     * *from* is one of the properties *known by CuMagic*, such as *min, max, value, text, ...*
+     */
+    virtual void mapProperty(const QString& from, const QString& to) = 0;
+
+    /*!
+     * \brief propMappedTo given the *from* property, returns the property *from is mapped to*
+     * \param from the property name known to the CuMagic, f.e. min, max, value, text, format, display_unit
+     * \return the property name to which *from* has been associated by mapProperty
+     */
+    virtual QString propMappedTo(const char *from) = 0;
+
+    /*!
+     * \brief propMappedFrom given the *to* property, returns the property *from* associated to *to* by mapProperty
+     * \param to the name of the property known to the object, associated by the mapProperty method
+     * \return the property name known to CuMagic that was mapped to *to* by mapProperty
+     */
+    virtual QString propMappedFrom(const char *to) = 0;
+
+    /*!
      * \brief find find the opropinfo associated to a given object name
      * \param onam object name to search
      * \return a reference to an opropinfo, if found, an empty opropinfo otherwise
      */
     virtual  opropinfo& find(const QString& onam) = 0;
+
+    /*!
+     * \brief get the suggested format to use when displaying the number, if available
+     *        from the configuration stage.
+     * \return a string defining the format for numbers, e.g. "%.2f", "%d" or an empty
+     *         string if the *format* key in the configuration data is not defined.
+     */
+    virtual QString format() const = 0;
+
+    /*!
+     * \brief get the measurement unit, if available from the configuration stage
+     * \return the measurement unit, or an empty string if the *display_unit*
+     *         key is not found within the configuration data.
+     */
+    virtual QString display_unit() const = 0;
 };
 
 
