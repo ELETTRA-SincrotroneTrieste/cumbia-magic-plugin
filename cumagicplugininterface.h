@@ -182,7 +182,7 @@ public:
    ma3->mapProperty("max", "yUpperBound");
  * \endcode
  *
- * \subsection Default properties
+ * \subsection vector_on_multiple_scalar Vector elements across display scalar widgets
  *
  * Elements of a vectorial quantity can be displayed each on dedicated widgets:
  *
@@ -195,6 +195,34 @@ public:
     ma_v_spinb->map(3, "x3");
     ma_v_spinb->map(4, "x4");
  * \endcode
+ *
+ * \subsection Default properties
+ *
+ * A set of properties is searched on an object by default, in this order:
+ * \li value
+ * \li checked
+ * \li text
+ *
+ * The type of the property is identified, and the type of the data is converted accordingly.
+ * The supported types are:
+ *
+ * \li QVector<double>
+ * \li QList<double>
+ * \li QVector<int>
+ * \li QList<int>
+ * \li QMetaType::Int:
+ * \li QMetaType::LongLong:
+ * \li QMetaType::Long:
+ * \li QMetaType::UInt:
+ * \li QMetaType::UShort:
+ * \li QMetaType::UChar:
+ * \li QMetaType::ULongLong:
+ * \li QMetaType::ULong:
+ * \li QMetaType::Double:
+ * \li QMetaType::Float:
+ * \li QMetaType::Bool:
+ * \li QVariant::String:
+ * \li QVariant::StringList:
  */
 class CuMagicPluginInterface
 {
