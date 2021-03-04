@@ -125,6 +125,7 @@ public:
  *
  * \section Introduction
  *
+ * \subsection includes_init Includes and plugin initialization
  * \code
    #include <cumagicplugininterface.h>
    // load magic plugin
@@ -140,16 +141,21 @@ public:
  * (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar,
  * displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber.
  *
+ *  \subsection scalar_on_scalar Scalar value on a scalar display widget
  * \code
    CuMagicI *ma0 = plugin_i->new_magic(ui->lcdNumber, "$1/double_scalar");
    CuMagicI *ma1 = plugin_i->new_magic(ui->progressBar, "$1/short_scalar");
  * \endcode
  *
- * Likewise, an element of an array can be picked and used as a scalar:
+ * \subsection array_el_on_scalar One element of an array on a scalar display widget
+ *
+ * An element of an array can be picked and used as a scalar:
  *
  * \code
  * CuMagicI *ma2 = plugin_i->new_magic(ui->x0_2, "$1/double_spectrum[0]");
  * \endcode
+ *
+ * \subsection subset_of_vector Subset of a vector onto a vector display widget
  *
  * A subset of elements of a vectorial quantity can be defined and displayed on a spectrum oriented widget,
  * such as a plot:
