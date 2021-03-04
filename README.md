@@ -1,2 +1,3 @@
-# cumbia-magic-plugin
-Plugin to transform any Qt object (QObject, QWidget) into a cumbia aware reader (and maybe, one day, writer)
+# gh-pages branch
+Configured to store docs under docs/ 
+(index.html must be under docs/ )
