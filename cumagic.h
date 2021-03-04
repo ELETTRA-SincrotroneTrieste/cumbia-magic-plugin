@@ -28,6 +28,8 @@ public:
     QMap<QString, QString> propmap;
     QString t_prop;
     QString format, display_unit;
+    QString src; // bare src passed in setSource
+    bool onetime;
 };
 
 

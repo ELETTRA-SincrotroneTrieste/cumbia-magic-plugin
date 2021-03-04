@@ -79,6 +79,7 @@ CuMagic::CuMagic(QObject *target, CumbiaPool *cu_pool, const CuControlsFactoryPo
     d->on_error_value = CuVariant(-1);
     d->t_prop = property;
     d->format = "%.2f";
+    d->onetime = false;
     if(!src.isEmpty()) CuMagic::setSource(src);
 }
 
@@ -138,10 +139,16 @@ void CuMagic::sendData(const CuData &da) {
 }
 
 void CuMagic::setSource(const QString &src) {
-    QString s = m_get_idxs(src); // s has "\[([\d,\-]+)\]" removed
+    const QString &s = m_get_idxs(src); // s has "\[([\d,\-]+)\]" removed
     qDebug() << __PRETTY_FUNCTION__ << src << "-->" << s << "idxs" << d->v_idxs;
-    CuControlsReaderA *r = d->context->replace_reader(s.toStdString(), this);
-    if(r)  r->setSource(s);
+    // if indexes change but src is unchanged, do not d->context->replace_reader
+    if(s != d->src) {
+        CuControlsReaderA *r = d->context->replace_reader(s.toStdString(), this);
+        if(r) {
+            r->setSource(s);
+            d->src = s; // bare src, not r->source
+        }
+    }
 }
 
 QString CuMagic::source() const {
@@ -237,6 +244,10 @@ void CuMagic::onUpdate(const CuData &data) {
     }
 
     emit newData(data);
+    if(d->onetime) {
+        unsetSource();
+        deleteLater();
+    }
 }
 
 QObject *CuMagic::get_target_object() const {

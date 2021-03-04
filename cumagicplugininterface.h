@@ -137,8 +137,8 @@ public:
  * \endcode
  *
  * The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget
- * (or even a simple QObject) through its properties. For example, a scalar number can be displayed as text
- * on either a QLineEdit or QLabel, as a number in a QDoubleSpinBox or a QLCDNumber or set on a progress bar.
+ * (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar,
+ * displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber.
  *
  * \code
    CuMagicI *ma0 = plugin_i->new_magic(ui->lcdNumber, "$1/double_scalar");
