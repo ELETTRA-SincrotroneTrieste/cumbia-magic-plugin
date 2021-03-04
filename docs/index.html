@@ -56,9 +56,9 @@ Includes and plugin initialization</h2>
 <div class="line">     perr(<span class="stringliteral">&quot;MyMagicApp: failed to load plugin \&quot;%s\&quot;&quot;</span>, <a class="code" href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">CuMagicPluginInterface::file_name</a>);</div>
 <div class="line"> <span class="keywordflow">else</span> { <span class="comment">// magic here</span></div>
 <div class="line"> }</div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html"><div class="ttname"><a href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a></div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:280</div></div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html_a8b980b93577b03ac22f592cd87660f61"><div class="ttname"><a href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">CuMagicPluginInterface::file_name</a></div><div class="ttdeci">static constexpr const char file_name[32]</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:335</div></div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html_ac15c589ce48f03bb5a7f0d1221e420d3"><div class="ttname"><a href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">CuMagicPluginInterface::get_instance</a></div><div class="ttdeci">static CuMagicPluginInterface * get_instance(CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject *plugin_qob)</div><div class="ttdoc">CuMagicPluginInterface::get_instance returns a new instance of the plugin.</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:322</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html"><div class="ttname"><a href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a></div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:281</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html_a8b980b93577b03ac22f592cd87660f61"><div class="ttname"><a href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">CuMagicPluginInterface::file_name</a></div><div class="ttdeci">static constexpr const char file_name[32]</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:336</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html_ac15c589ce48f03bb5a7f0d1221e420d3"><div class="ttname"><a href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">CuMagicPluginInterface::get_instance</a></div><div class="ttdeci">static CuMagicPluginInterface * get_instance(CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject *plugin_qob)</div><div class="ttdoc">CuMagicPluginInterface::get_instance returns a new instance of the plugin.</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:323</div></div>
 <div class="ttc" id="acumagicplugininterface_8h_html"><div class="ttname"><a href="cumagicplugininterface_8h.html">cumagicplugininterface.h</a></div></div>
 </div><!-- fragment --><p>The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar, displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber. Configuration properties (<em>min, max, format, display_unit</em>) are used to set the minimum and maximum properties of an object, if relevant. <em>format</em> is used to display numbers as text. The <em>display_unit</em> is appended to the text if either the property <em>displayUnitEnabled is not defined or defined and set to true</em>.</p>
 <dl class="section note"><dt>Note</dt><dd>The <em>displayUnitEnabled</em> property is the same used in QuLabel for the same purpose.</dd></dl>
@@ -158,11 +158,12 @@ On configuration</h3>
 <li>min </li>
 <li>max</li>
 </ul>
-<p>If CuData type <em>property</em> contains <em>display_unit</em> and <em>format</em>, they are used to add the measurement unit suffix and to format a number accordingly, if either is applicable.</p>
-<p>The following other CuData configuration keys are used, if available: </p><ul>
-<li>display_unit: if the object has a <em>suffix</em> property (e.g. QSpinBox, QDoubleSpinBox) or the property used to show a numeric value is a string, the <em>display_unit</em> is indicated </li>
-<li>format: if applicable, the number is formatted accordingly. </li>
+<p>The following other configuration keys are used, if available:</p>
+<ul>
+<li>display_unit: if the object has a <em>suffix</em> property (e.g. QSpinBox, QDoubleSpinBox) or the property used to show a numeric value is a string, the <em>display_unit</em> is appended. </li>
+<li>format: if applicable, the number is formatted accordingly.</li>
 </ul>
+<dl class="section note"><dt>Note</dt><dd>For the Tango engine, the <em>display_unit</em> and <em>format</em> options are stored in the Tango database as attribute properties. </dd></dl>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
