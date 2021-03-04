@@ -144,16 +144,15 @@ private:
     QString m_idxs_to_string() const;
 };
 
-/** \mainpage This plugin allows magic
+/*!
  *
- * \par Introduction
  * This plugin provides objects called CuMagic that can be *attached* to normal Qt widgets (or simple QObjects)
  * and display values read from cumbia on them. A Qt *property* determines how to show the data. A *custom property*
  * may be specified. Otherwise, *value*, *text* and other default ones are searched for.
  *
- * \section Use cases
+ * \section use_cases Use cases
  *
- * \subsection 1. CuMagic attached to one single object
+ * \subsection single_object CuMagic attached to one single object
  *
  * \li cumbia scalar data - scalar property: the scalar value is *set* on the property
  * \li cumbia vector data and no index mapping - scalar property: *the first element is set* on the property
@@ -164,7 +163,7 @@ private:
  * \li cumbia spectrum data with indexes specified: the set of indexes determines which values are taken from the vector and
  *     *set* on the property.
  *
- * \subsection 2. CuMagic attached to a list of objects
+ * \subsection list_of_objects CuMagic attached to a list of objects
  *
  * \li cumbia scalar data: can only be used in context number 1.
  * \li cumbia spectrum data: through index mapping, each element of the data array can be displayed in the specified object
