@@ -140,8 +140,37 @@ public:
  * The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget
  * (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar,
  * displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber.
+ * Configuration properties (*min, max, format, display_unit*) are used to set the minimum and maximum properties
+ * of an object, if relevant. *format* is used to display numbers as text. The *display_unit* is appended to the
+ * text if either the property *displayUnitEnabled is not defined or defined and set to true*.
+
+ * \note
+ * The *displayUnitEnabled* property is the same used in QuLabel for the same purpose.
  *
- *  \subsection scalar_on_scalar Scalar value on a scalar display widget
+ * \subsubsection prop_name_mapping Property names mapping
+ * The default property names can be mapped into those available on the custom object if they match the semantics,
+ * without need adding new properties just to match names. For example, if a plot has the two properties
+ *
+ * \li yLowerBound
+ * \li yUpperBound
+ *
+ * they can be used after mapping *max* into *yUpperBound* and *min* into *yLowerBound*:
+ *
+ * \code
+
+   CuMagicI *ma = plugin_i->new_magic(ui->plot, "$1/double_spectrum", "setData");
+
+   // if min and max configuration properties are available, use them to set yLowerBound and yUpperBound on the
+   // plot, respectively
+   ma->mapProperty("min", "yLowerBound");
+   ma->mapProperty("max", "yUpperBound");
+
+   \endcode
+ *
+ * \subsection scalar_on_scalar Scalar value on a scalar display widget
+ *
+ * Scalar data is naturally mapped into display scalar widgets with a *one liner*:
+ *
  * \code
    CuMagicI *ma0 = plugin_i->new_magic(ui->lcdNumber, "$1/double_scalar");
    CuMagicI *ma1 = plugin_i->new_magic(ui->progressBar, "$1/short_scalar");
@@ -161,7 +190,8 @@ public:
  * such as a plot:
  *
  * \code
-    // Let a custom plot be defined as this:
+
+   // Let a custom plot be defined as this:
     class MyDisplayVector : public QuPlotBase {
         Q_OBJECT
         Q_PROPERTY(QList<double> myData READ myData WRITE setMyData) // property to access myData
@@ -176,10 +206,12 @@ public:
    // pick values at indexes 1 to 10, then other three times the element 10, elements 15,16 and finally 20 to 26
    // use the "myData" property on the plot for updates
    CuMagicI *ma3 = plugin_i->new_magic(ui->plot, "$1/double_spectrum_ro[1-10,10,10,10,15,16,20-26]", "myData");
+
    // if min and max configuration properties are available, use them to set yLowerBound and yUpperBound on the
    // plot, respectively
    ma3->mapProperty("min", "yLowerBound");
    ma3->mapProperty("max", "yUpperBound");
+
  * \endcode
  *
  * \subsection vector_on_multiple_scalar Vector elements across display scalar widgets
@@ -187,6 +219,7 @@ public:
  * Elements of a vectorial quantity can be displayed each on dedicated widgets:
  *
  * \code
+
     CuMagicI *ma_v_spinb = plugin_i->new_magic(this, "$1/double_spectrum");
     // "x0", ... "x4" are the object names of five QDoubleSpinBox
     ma_v_spinb->map(0, "x0"); // element 0 of double_spectrum is displayed on QDoubleSpinBox "x0"
@@ -194,9 +227,35 @@ public:
     ma_v_spinb->map(2, "x2");
     ma_v_spinb->map(3, "x3");
     ma_v_spinb->map(4, "x4");
+
  * \endcode
  *
- * \subsection Default properties
+ * \note
+ *
+ * The following code brings the same result as the last one:
+ *
+ * \code
+   CuMagicI *m0 = plugin_i->new_magic(ui->x0_2, "$1/double_spectrum[0]");
+   CuMagicI *m1 = plugin_i->new_magic(ui->x1_2, "$1/double_spectrum[1]");
+   CuMagicI *m2 = plugin_i->new_magic(ui->x2_2, "$1/double_spectrum[2]");
+   CuMagicI *m3 = plugin_i->new_magic(ui->x3_2, "$1/double_spectrum[3]");
+   CuMagicI *m4 = plugin_i->new_magic(ui->x4_2, "$1/double_spectrum[4]");
+ * \endcode
+ *
+ * ui->x0_2 to ui->x4_2 are QDoubleSpinBox, as are ui->x0  to ui->x4 in the example above.
+ * The only difference is that the last snipped implies five CuMagic objects around instead
+ * of just one.
+ *
+ * On the other hand, given the nature of *cumbia readers*, in both cases *only one reader*
+ * serves ma_v_spinb in the previous example and all CuMagic's in this one. That is because
+ * several readers with the same source (in this case *$1/double_spectrum) share the same
+ * *read action* underneath. In other words, only one read operation serves CuMagic's m0 to
+ * m4 updates at the same time.
+ *
+ *
+ * \subsection def_prop Default properties
+ *
+ * \subsubsection def_prop_update On update
  *
  * A set of properties is searched on an object by default, in this order:
  * \li value
@@ -223,6 +282,23 @@ public:
  * \li QMetaType::Bool:
  * \li QVariant::String:
  * \li QVariant::StringList:
+ *
+ * \subsubsection def_prop_config On configuration
+ *
+ * On configuration (when CuData *type* equals *property*), the following default properties are searched on the
+ * object:
+ *
+ * \li min
+ * \li max
+ *
+ * The following other configuration keys are used, if available:
+ *
+ * \li display_unit: if the object has a *suffix* property (e.g. QSpinBox, QDoubleSpinBox) or the property used to
+ *     show a numeric value is a string, the *display_unit* is appended.
+ * \li format: if applicable, the number is formatted accordingly.
+ *
+ * \note
+ * For the Tango engine, the *display_unit* and *format* options are stored in the Tango database as attribute properties.
  */
 class CuMagicPluginInterface
 {
