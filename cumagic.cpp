@@ -271,6 +271,7 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
     QStringList props;
     bool converted = false, unsupported_type = false;
     QVariant qva;
+    QString con_p = ""; // property name on which setProperty succeeded
     prop.isEmpty() ?  props <<  d->propmap.value("value", "value")
                              << d->propmap.value("checked", "checked")
                              << d->propmap.value("text", "text")
@@ -317,7 +318,6 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                     qva = m_convert<bool>(v);
                 } break;
                 case QVariant::String: {
-//                    std::string s = v.toString(&converted, d->format.toStdString().c_str());
                     qva = m_str_convert(v);
                 } break;
                 case QVariant::StringList: {
@@ -330,12 +330,21 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
             }
             if(!unsupported_type && qva.isValid()) {
                 converted |= t->setProperty(qprop.toLatin1().data(), qva);
+                if(converted) con_p = qprop;
             }
         }
     }
     if(!converted)
         perr("CuMagic.m_prop_set: failed to set value %s on any of properties {%s} on %s",
              v.toString().c_str(), qstoc(props.join(",")), qstoc(t->objectName()));
+    else {
+        if(t->metaObject()->indexOfProperty("suffix") > -1 && !d->display_unit.isEmpty() &&
+                (t->metaObject()->indexOfProperty("displayUnitEnabled") < 0 || t->property("displayUnitEnabled").toBool() ) )
+            t->setProperty("suffix", " [" + d->display_unit + "]");
+        else if(!d->display_unit.isEmpty() && t->metaObject()->property(t->metaObject()->indexOfProperty(con_p.toLatin1())).type() == QVariant::String)
+            t->setProperty(con_p.toLatin1(), t->property(con_p.toLatin1()).toString() + " [" + d->display_unit + "]");
+
+    }
     return converted;
 }
 
