@@ -125,7 +125,6 @@ public:
  *
  * \section Introduction
  *
- * \subsection includes_init Includes and plugin initialization
  * \code
    #include <cumagicplugininterface.h>
    // load magic plugin
@@ -138,6 +137,7 @@ public:
  * \endcode
  *
  * The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget
+<<<<<<< HEAD
  * (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar,
  * displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber.
  * Configuration properties (*min, max, format, display_unit*) are used to set the minimum and maximum properties
@@ -176,15 +176,11 @@ public:
    CuMagicI *ma1 = plugin_i->new_magic(ui->progressBar, "$1/short_scalar");
  * \endcode
  *
- * \subsection array_el_on_scalar One element of an array on a scalar display widget
- *
- * An element of an array can be picked and used as a scalar:
+ * Likewise, an element of an array can be picked and used as a scalar:
  *
  * \code
  * CuMagicI *ma2 = plugin_i->new_magic(ui->x0_2, "$1/double_spectrum[0]");
  * \endcode
- *
- * \subsection subset_of_vector Subset of a vector onto a vector display widget
  *
  * A subset of elements of a vectorial quantity can be defined and displayed on a spectrum oriented widget,
  * such as a plot:
@@ -214,7 +210,7 @@ public:
 
  * \endcode
  *
- * \subsection vector_on_multiple_scalar Vector elements across display scalar widgets
+ * \subsection Default properties
  *
  * Elements of a vectorial quantity can be displayed each on dedicated widgets:
  *
@@ -299,6 +295,7 @@ public:
  *
  * \note
  * For the Tango engine, the *display_unit* and *format* options are stored in the Tango database as attribute properties.
+ *
  */
 class CuMagicPluginInterface
 {
@@ -345,10 +342,10 @@ public:
      */
     static CuMagicPluginInterface* get_instance(CumbiaPool *cu_poo,
                                                       const CuControlsFactoryPool& fpoo,
-                                                      QObject *plugin_qob){
+                                                      QObject **plugin_qob){
         CuMagicPluginInterface *i;
         CuPluginLoader plo;
-        i = plo.get<CuMagicPluginInterface>(file_name, &plugin_qob);
+        i = plo.get<CuMagicPluginInterface>(file_name, plugin_qob);
         if(!i)
             perr("CuMagicPluginInterface::get_instance: failed to load plugin \"%s\"", file_name);
         else
