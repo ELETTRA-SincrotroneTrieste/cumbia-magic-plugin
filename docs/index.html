@@ -54,11 +54,12 @@ Introduction</h1>
 <div class="line">     perr(<span class="stringliteral">&quot;MyMagicApp: failed to load plugin \&quot;%s\&quot;&quot;</span>, <a class="code" href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">CuMagicPluginInterface::file_name</a>);</div>
 <div class="line"> <span class="keywordflow">else</span> { <span class="comment">// magic here</span></div>
 <div class="line"> }</div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html"><div class="ttname"><a href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a></div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:301</div></div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html_aa7db9af9360146b33bfcdf478e804f53"><div class="ttname"><a href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">CuMagicPluginInterface::file_name</a></div><div class="ttdeci">static QString file_name()</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:356</div></div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html_aabb1461a8742e707fadc34300e1498b5"><div class="ttname"><a href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">CuMagicPluginInterface::get_instance</a></div><div class="ttdeci">static CuMagicPluginInterface * get_instance(CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject **plugin_qob)</div><div class="ttdoc">CuMagicPluginInterface::get_instance returns a new instance of the plugin.</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:343</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html"><div class="ttname"><a href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a></div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:314</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html_aa7db9af9360146b33bfcdf478e804f53"><div class="ttname"><a href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">CuMagicPluginInterface::file_name</a></div><div class="ttdeci">static QString file_name()</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:369</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html_aabb1461a8742e707fadc34300e1498b5"><div class="ttname"><a href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">CuMagicPluginInterface::get_instance</a></div><div class="ttdeci">static CuMagicPluginInterface * get_instance(CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject **plugin_qob)</div><div class="ttdoc">CuMagicPluginInterface::get_instance returns a new instance of the plugin.</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:356</div></div>
 <div class="ttc" id="acumagicplugininterface_8h_html"><div class="ttname"><a href="cumagicplugininterface_8h.html">cumagicplugininterface.h</a></div></div>
-</div><!-- fragment --><p>The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar, displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber. Configuration properties (<em>min, max, format, display_unit</em>) are used to set the minimum and maximum properties of an object, if relevant. <em>format</em> is used to display numbers as text. The <em>display_unit</em> is appended to the text if either the property <em>displayUnitEnabled is not defined or defined and set to true</em>.</p>
+</div><!-- fragment --><p>The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget (or even a simple QObject) through its <em>Qt properties</em>. For example, a scalar number can be set on a progress bar, displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber. Configuration properties (<em>min, max, format, display_unit</em>) are used to set the minimum and maximum properties of an object, if relevant. <em>format</em> is used to display numbers as text. The <em>display_unit</em> is appended to the text if either the property <em>displayUnitEnabled is not defined or defined and set to true</em>.</p>
+<p>If a Qt object property is defined with the <em>Q_PROPERTY</em> macro in the class definition, the type of that property is used to convert the value read (see <a class="el" href="index.html#def_prop_update">On update</a> [Property type identification and data conversion]). If a <a class="el" href="classCuMagic.html">CuMagic</a> is applied to an object and the specified <em>property name is not defined with the Q_PROPERTY macro</em>, then the type of data is used to add and set a <em>dynamic property</em> of that type on the object.</p>
 <dl class="section note"><dt>Note</dt><dd>The <em>displayUnitEnabled</em> property is the same used in QuLabel for the same purpose.</dd></dl>
 <h3><a class="anchor" id="prop_name_mapping"></a>
 Property names mapping</h3>
@@ -80,7 +81,10 @@ Property names mapping</h3>
 </div><!-- fragment --><h2><a class="anchor" id="scalar_on_scalar"></a>
 Scalar value on a scalar display widget</h2>
 <p>Scalar data is naturally mapped into display scalar widgets with a <em>one liner</em>:</p>
-<div class="fragment"><div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma0 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;lcdNumber, <span class="stringliteral">&quot;$1/double_scalar&quot;</span>);</div>
+<div class="fragment"><div class="line"><span class="comment">// show a double scalar value on a QLcdNumber</span></div>
+<div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma0 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;lcdNumber, <span class="stringliteral">&quot;$1/double_scalar&quot;</span>);</div>
+<div class="line"><span class="comment">// show a short value on a progress bar</span></div>
+<div class="line"><span class="comment">// since a progress bar naturally has *minimum* and *maximum* properties, the CuMagic takes care of them</span></div>
 <div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma1 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;progressBar, <span class="stringliteral">&quot;$1/short_scalar&quot;</span>);</div>
 </div><!-- fragment --><p>Likewise, an element of an array can be picked and used as a scalar:</p>
 <div class="fragment"><div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma2 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;x0_2, <span class="stringliteral">&quot;$1/double_spectrum[0]&quot;</span>);</div>
@@ -134,7 +138,9 @@ On update</h3>
 <li>checked </li>
 <li>text</li>
 </ul>
-<p>The type of the property is identified, and the type of the data is converted accordingly. The supported types are:</p>
+<h3><a class="anchor" id="prop_identif"></a>
+Property type identification and data conversion</h3>
+<p>If the property targeted by <a class="el" href="classCuMagic.html">CuMagic</a> is defined by the Q_PROPERTY macro in the class definition, then the type of the property is identified, and the type of the data is converted accordingly. The supported types are:</p>
 <ul>
 <li>QVector&lt;double&gt; </li>
 <li>QList&lt;double&gt; </li>
@@ -154,6 +160,7 @@ On update</h3>
 <li>QVariant::String: </li>
 <li>QVariant::StringList:</li>
 </ul>
+<p>If the <a class="el" href="classCuMagic.html">CuMagic</a> targets a property not defined with the Q_PROPERTY macro, then a dynamic property is added to the object and its type will be in accord with the data type.</p>
 <h3><a class="anchor" id="def_prop_config"></a>
 On configuration</h3>
 <p>On configuration (when CuData <em>type</em> equals <em>property</em>), the following default properties are searched on the object:</p>
