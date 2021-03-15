@@ -137,7 +137,6 @@ public:
  * \endcode
  *
  * The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget
-<<<<<<< HEAD
  * (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar,
  * displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber.
  * Configuration properties (*min, max, format, display_unit*) are used to set the minimum and maximum properties
@@ -347,7 +346,7 @@ public:
         CuPluginLoader plo;
         i = plo.get<CuMagicPluginInterface>(CuMagicPluginInterface::file_name(), plugin_qob);
         if(!i)
-            perr("CuMagicPluginInterface::get_instance: failed to load plugin \"%s\"", file_name);
+            perr("CuMagicPluginInterface::get_instance: failed to load plugin \"%s\"", qstoc(CuMagicPluginInterface::file_name()));
         else
             i->init(cu_poo, fpoo);
         return i;

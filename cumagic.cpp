@@ -333,17 +333,148 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                 if(converted) con_p = qprop;
             }
         }
-    }
-    if(!converted)
-        perr("CuMagic.m_prop_set: failed to set value %s on any of properties {%s} on %s",
-             v.toString().c_str(), qstoc(props.join(",")), qstoc(t->objectName()));
-    else {
-        if(t->metaObject()->indexOfProperty("suffix") > -1 && !d->display_unit.isEmpty() &&
-                (t->metaObject()->indexOfProperty("displayUnitEnabled") < 0 || t->property("displayUnitEnabled").toBool() ) )
-            t->setProperty("suffix", " [" + d->display_unit + "]");
-        else if(!d->display_unit.isEmpty() && t->metaObject()->property(t->metaObject()->indexOfProperty(con_p.toLatin1())).type() == QVariant::String)
-            t->setProperty(con_p.toLatin1(), t->property(con_p.toLatin1()).toString() + " [" + d->display_unit + "]");
+        else if(pi < 0 && !converted) {
+            const char* p = qprop.toLatin1();
+            CuVariant::DataType ty = v.getType();
+            switch(v.getFormat()) {
+            case CuVariant::Scalar: {
+                switch(ty) {
+                case CuVariant::Double:
+                case CuVariant::LongDouble: {
+                    double dou;
+                    v.to<double>(dou);
+                    converted = t->setProperty(p, dou);
+                }break;
+                case CuVariant::Float:
+                    converted = t->setProperty(p, v.toFloat());
+                    break;
+                case CuVariant::Int:
+                    converted = t->setProperty(p, v.toInt());
+                    break;
+                case CuVariant::Short:
+                    converted = t->setProperty(p, v.toShortInt());
+                    break;
+                case CuVariant::UInt:
+                    converted = t->setProperty(p, v.toUInt());
+                    break;
+                case CuVariant::LongUInt:
+                case CuVariant::LongLongUInt: {
+                    long long unsigned ll;
+                    v.to<long long unsigned>(ll);
+                    converted = t->setProperty(p, ll);
+                }break;
+                case CuVariant::LongLongInt:
+                case CuVariant::LongInt: {
+                    long long int lli;
+                    v.to<long long int>(lli);
+                    converted = t->setProperty(p, lli);
+                } break;
+                case CuVariant::UShort:
+                    converted = t->setProperty(p, v.toUShortInt());
+                    break;
+                case CuVariant::Boolean: {
+                    bool b;
+                    v.to<bool>(b);
+                    converted = t->setProperty(p, b);
+                }break;
+                case CuVariant::String:
+                    converted = t->setProperty(p, QString::fromStdString(v.toString()));
+                    break;
 
+                default:
+                    break;
+
+                }break;
+            case CuVariant::Vector: {
+                    switch(ty) {
+                    case CuVariant::Double:
+                    case CuVariant::LongDouble: {
+                        std::vector<double> vdou;
+                        v.toVector<double>(vdou);
+                        QVariantList vl (vdou.begin(), vdou.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::Float: {
+                        std::vector<float> vf;
+                        v.toVector<float>(vf);
+                        QVariantList vl (vf.begin(), vf.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::Int: {
+                        std::vector<int> vi;
+                        v.toVector<int>(vi);
+                        QVariantList vl (vi.begin(), vi.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::Short: {
+                        std::vector<short> vsi;
+                        v.toVector<short>(vsi);
+                        QVariantList vl (vsi.begin(), vsi.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::UInt: {
+                        std::vector<unsigned> vui;
+                        v.toVector<unsigned>(vui);
+                        QVariantList vl (vui.begin(), vui.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::LongUInt:
+                    case CuVariant::LongLongUInt: {
+                        std::vector<unsigned long long> vull;
+                        v.toVector<unsigned long long>(vull);
+                        QVariantList vl (vull.begin(), vull.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::LongLongInt:
+                    case CuVariant::LongInt: {
+                        std::vector< long long> vll;
+                        v.toVector< long long>(vll);
+                        QVariantList vl (vll.begin(), vll.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::UShort: {
+                        std::vector<unsigned short> vus;
+                        v.toVector<unsigned short>(vus);
+                        QVariantList vl (vus.begin(), vus.end());
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::Boolean: {
+                        std::vector<bool> vboo;
+                        v.toVector<bool>(vboo);
+                        QVariantList vl;
+                        foreach(bool b, vboo)
+                            vl.push_back(b);
+                        converted = t->setProperty(p, vl);
+                    }break;
+                    case CuVariant::String:{
+                        QuStringList sl(v);
+                        converted = t->setProperty(p, sl);
+                    }
+                        break;
+
+                    default:
+                        break;
+                    } break;
+                case CuVariant::Matrix: {
+
+                    }break;
+                    default: // EndFormatTypes, FormatInvalid
+                        break;
+                    }
+                }
+            }
+            if(!converted)
+                perr("CuMagic.m_prop_set: failed to set value %s on any of properties {%s} on %s",
+                     v.toString().c_str(), qstoc(props.join(",")), qstoc(t->objectName()));
+            else {
+                if(t->metaObject()->indexOfProperty("suffix") > -1 && !d->display_unit.isEmpty() &&
+                        (t->metaObject()->indexOfProperty("displayUnitEnabled") < 0 || t->property("displayUnitEnabled").toBool() ) )
+                    t->setProperty("suffix", " [" + d->display_unit + "]");
+                else if(!d->display_unit.isEmpty() && t->metaObject()->property(t->metaObject()->indexOfProperty(con_p.toLatin1())).type() == QVariant::String)
+                    t->setProperty(con_p.toLatin1(), t->property(con_p.toLatin1()).toString() + " [" + d->display_unit + "]");
+
+            }
+        }
     }
     return converted;
 }
