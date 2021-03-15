@@ -43,7 +43,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classCuMagicPluginInterface-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">CuMagicPluginInterface Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -77,14 +76,11 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ac15c589ce48f03bb5a7f0d1221e420d3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">get_instance</a> (CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject *plugin_qob)</td></tr>
-<tr class="memdesc:ac15c589ce48f03bb5a7f0d1221e420d3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3" title="CuMagicPluginInterface::get_instance returns a new instance of the plugin.">CuMagicPluginInterface::get_instance</a> returns a new instance of the plugin.  <a href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">More...</a><br /></td></tr>
-<tr class="separator:ac15c589ce48f03bb5a7f0d1221e420d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:a8b980b93577b03ac22f592cd87660f61"><td class="memItemLeft" align="right" valign="top">static constexpr const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">file_name</a> [32] = &quot;libcumbia-magic-plugin.so&quot;</td></tr>
-<tr class="separator:a8b980b93577b03ac22f592cd87660f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabb1461a8742e707fadc34300e1498b5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">get_instance</a> (CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject **plugin_qob)</td></tr>
+<tr class="memdesc:aabb1461a8742e707fadc34300e1498b5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5" title="CuMagicPluginInterface::get_instance returns a new instance of the plugin.">CuMagicPluginInterface::get_instance</a> returns a new instance of the plugin.  <a href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">More...</a><br /></td></tr>
+<tr class="separator:aabb1461a8742e707fadc34300e1498b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7db9af9360146b33bfcdf478e804f53"><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">file_name</a> ()</td></tr>
+<tr class="separator:aa7db9af9360146b33bfcdf478e804f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a798a52607a9359a47f3bfe8a4f74bd4b"></a>
@@ -113,8 +109,35 @@ Static Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac15c589ce48f03bb5a7f0d1221e420d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac15c589ce48f03bb5a7f0d1221e420d3">&#9670;&nbsp;</a></span>get_instance()</h2>
+<a id="aa7db9af9360146b33bfcdf478e804f53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7db9af9360146b33bfcdf478e804f53">&#9670;&nbsp;</a></span>file_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static QString CuMagicPluginInterface::file_name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="reference">Referenced by <a class="el" href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">get_instance()</a>.</p>
+
+</div>
+</div>
+<a id="aabb1461a8742e707fadc34300e1498b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabb1461a8742e707fadc34300e1498b5">&#9670;&nbsp;</a></span>get_instance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -137,7 +160,7 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">QObject *&#160;</td>
+          <td class="paramtype">QObject **&#160;</td>
           <td class="paramname"><em>plugin_qob</em>&#160;</td>
         </tr>
         <tr>
@@ -164,7 +187,7 @@ Static Public Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>an instance of the plugin or nullptr in case of failure.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Repeated calls will return the same plugin instance (by Qt plugin nature) Use either getMultiSequentialReader or getMultiConcurrentReader to get new instances of multi readers instead </dd></dl>
 
-<p class="reference">References <a class="el" href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">file_name</a>, and <a class="el" href="classCuMagicPluginInterface.html#a755f7f417803d25784c825bd46e77c03">init()</a>.</p>
+<p class="reference">References <a class="el" href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">file_name()</a>, and <a class="el" href="classCuMagicPluginInterface.html#a755f7f417803d25784c825bd46e77c03">init()</a>.</p>
 
 </div>
 </div>
@@ -239,7 +262,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Implemented in <a class="el" href="classCuMagicPlugin.html#aa6b6d63558f3f311b398729f9f3dcc4e">CuMagicPlugin</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">get_instance()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">get_instance()</a>.</p>
 
 </div>
 </div>
@@ -292,31 +315,6 @@ Static Public Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>a <em>new</em> instance of an object implementing <a class="el" href="classCuMagicI.html">CuMagicI</a> interface </dd></dl>
 
 <p>Implemented in <a class="el" href="classCuMagicPlugin.html#a99fd2398b0b98472c2f210546f989bfb">CuMagicPlugin</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a8b980b93577b03ac22f592cd87660f61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b980b93577b03ac22f592cd87660f61">&#9670;&nbsp;</a></span>file_name</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr const char CuMagicPluginInterface::file_name[32] = &quot;libcumbia-magic-plugin.so&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="reference">Referenced by <a class="el" href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">get_instance()</a>.</p>
 
 </div>
 </div>

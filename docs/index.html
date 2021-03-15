@@ -46,21 +46,19 @@ $(function() {
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="Introduction"></a>
 Introduction</h1>
-<h2><a class="anchor" id="includes_init"></a>
-Includes and plugin initialization</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="cumagicplugininterface_8h.html">cumagicplugininterface.h</a>&gt;</span></div>
 <div class="line"><span class="comment">// load magic plugin</span></div>
 <div class="line">QObject *magic_plo;</div>
-<div class="line"><a class="code" href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a> *plugin_i = <a class="code" href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">CuMagicPluginInterface::get_instance</a>(cumbia_pool, m_ctrl_factory_pool, magic_plo);</div>
+<div class="line"><a class="code" href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a> *plugin_i = <a class="code" href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">CuMagicPluginInterface::get_instance</a>(cumbia_pool, m_ctrl_factory_pool, magic_plo);</div>
 <div class="line"><span class="keywordflow">if</span>(!plugin_i)</div>
-<div class="line">     perr(<span class="stringliteral">&quot;MyMagicApp: failed to load plugin \&quot;%s\&quot;&quot;</span>, <a class="code" href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">CuMagicPluginInterface::file_name</a>);</div>
+<div class="line">     perr(<span class="stringliteral">&quot;MyMagicApp: failed to load plugin \&quot;%s\&quot;&quot;</span>, <a class="code" href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">CuMagicPluginInterface::file_name</a>);</div>
 <div class="line"> <span class="keywordflow">else</span> { <span class="comment">// magic here</span></div>
 <div class="line"> }</div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html"><div class="ttname"><a href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a></div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:304</div></div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html_a8b980b93577b03ac22f592cd87660f61"><div class="ttname"><a href="classCuMagicPluginInterface.html#a8b980b93577b03ac22f592cd87660f61">CuMagicPluginInterface::file_name</a></div><div class="ttdeci">static constexpr const char file_name[32]</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:359</div></div>
-<div class="ttc" id="aclassCuMagicPluginInterface_html_ac15c589ce48f03bb5a7f0d1221e420d3"><div class="ttname"><a href="classCuMagicPluginInterface.html#ac15c589ce48f03bb5a7f0d1221e420d3">CuMagicPluginInterface::get_instance</a></div><div class="ttdeci">static CuMagicPluginInterface * get_instance(CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject *plugin_qob)</div><div class="ttdoc">CuMagicPluginInterface::get_instance returns a new instance of the plugin.</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:346</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html"><div class="ttname"><a href="classCuMagicPluginInterface.html">CuMagicPluginInterface</a></div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:301</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html_aa7db9af9360146b33bfcdf478e804f53"><div class="ttname"><a href="classCuMagicPluginInterface.html#aa7db9af9360146b33bfcdf478e804f53">CuMagicPluginInterface::file_name</a></div><div class="ttdeci">static QString file_name()</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:356</div></div>
+<div class="ttc" id="aclassCuMagicPluginInterface_html_aabb1461a8742e707fadc34300e1498b5"><div class="ttname"><a href="classCuMagicPluginInterface.html#aabb1461a8742e707fadc34300e1498b5">CuMagicPluginInterface::get_instance</a></div><div class="ttdeci">static CuMagicPluginInterface * get_instance(CumbiaPool *cu_poo, const CuControlsFactoryPool &amp;fpoo, QObject **plugin_qob)</div><div class="ttdoc">CuMagicPluginInterface::get_instance returns a new instance of the plugin.</div><div class="ttdef"><b>Definition:</b> cumagicplugininterface.h:343</div></div>
 <div class="ttc" id="acumagicplugininterface_8h_html"><div class="ttname"><a href="cumagicplugininterface_8h.html">cumagicplugininterface.h</a></div></div>
-</div><!-- fragment --><p>The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar, displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber. Configuration properties (<em>min, max, format, display_unit</em>) are used to set the minimum and maximum properties of an object, if relevant. <em>format</em> is used to display numbers as text. The <em>display_unit</em> is appended to the text if either the property <em>displayUnitEnabled is not defined or defined and set to true</em>.</p>
+</div><!-- fragment --><p>The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar, displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber. Configuration properties (<em>min, max, format, display_unit</em>) are used to set the minimum and maximum properties of an object, if relevant. <em>format</em> is used to display numbers as text. The <em>display_unit</em> is appended to the text if either the property <em>displayUnitEnabled is not defined or defined and set to true</em>.</p>
 <dl class="section note"><dt>Note</dt><dd>The <em>displayUnitEnabled</em> property is the same used in QuLabel for the same purpose.</dd></dl>
 <h3><a class="anchor" id="prop_name_mapping"></a>
 Property names mapping</h3>
@@ -84,13 +82,9 @@ Scalar value on a scalar display widget</h2>
 <p>Scalar data is naturally mapped into display scalar widgets with a <em>one liner</em>:</p>
 <div class="fragment"><div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma0 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;lcdNumber, <span class="stringliteral">&quot;$1/double_scalar&quot;</span>);</div>
 <div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma1 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;progressBar, <span class="stringliteral">&quot;$1/short_scalar&quot;</span>);</div>
-</div><!-- fragment --><h2><a class="anchor" id="array_el_on_scalar"></a>
-One element of an array on a scalar display widget</h2>
-<p>An element of an array can be picked and used as a scalar:</p>
+</div><!-- fragment --><p>Likewise, an element of an array can be picked and used as a scalar:</p>
 <div class="fragment"><div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma2 = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(ui-&gt;x0_2, <span class="stringliteral">&quot;$1/double_spectrum[0]&quot;</span>);</div>
-</div><!-- fragment --><h2><a class="anchor" id="subset_of_vector"></a>
-Subset of a vector onto a vector display widget</h2>
-<p>A subset of elements of a vectorial quantity can be defined and displayed on a spectrum oriented widget, such as a plot:</p>
+</div><!-- fragment --><p>A subset of elements of a vectorial quantity can be defined and displayed on a spectrum oriented widget, such as a plot:</p>
 <div class="fragment"><div class="line"><span class="comment">// Let a custom plot be defined as this:</span></div>
 <div class="line"> <span class="keyword">class </span>MyDisplayVector : <span class="keyword">public</span> QuPlotBase {</div>
 <div class="line">     Q_OBJECT</div>
@@ -111,8 +105,8 @@ Subset of a vector onto a vector display widget</h2>
 <div class="line"><span class="comment">// plot, respectively</span></div>
 <div class="line">ma3-&gt;<a class="code" href="classCuMagicI.html#a53dd27becdfc4f08070f257adabe06cb">mapProperty</a>(<span class="stringliteral">&quot;min&quot;</span>, <span class="stringliteral">&quot;yLowerBound&quot;</span>);</div>
 <div class="line">ma3-&gt;<a class="code" href="classCuMagicI.html#a53dd27becdfc4f08070f257adabe06cb">mapProperty</a>(<span class="stringliteral">&quot;max&quot;</span>, <span class="stringliteral">&quot;yUpperBound&quot;</span>);</div>
-</div><!-- fragment --><h2><a class="anchor" id="vector_on_multiple_scalar"></a>
-Vector elements across display scalar widgets</h2>
+</div><!-- fragment --><h2><a class="anchor" id="Default"></a>
+properties</h2>
 <p>Elements of a vectorial quantity can be displayed each on dedicated widgets:</p>
 <div class="fragment"><div class="line"><a class="code" href="classCuMagicI.html">CuMagicI</a> *ma_v_spinb = plugin_i-&gt;<a class="code" href="classCuMagicPluginInterface.html#a9dab1cbc275602390203d6f04c9493f5">new_magic</a>(<span class="keyword">this</span>, <span class="stringliteral">&quot;$1/double_spectrum&quot;</span>);</div>
 <div class="line"><span class="comment">// &quot;x0&quot;, ... &quot;x4&quot; are the object names of five QDoubleSpinBox</span></div>
