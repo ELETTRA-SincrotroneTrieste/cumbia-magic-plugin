@@ -353,7 +353,7 @@ public:
         return i;
     }
 
-    static constexpr const char file_name[32] = "libcumbia-magic-plugin.so";
+    static QString file_name() const { return "libcumbia-magic-plugin.so"; }
 };
 
 #define CuMagicPluginInterface_iid "eu.elettra.qutils.CuMagicPluginInterface"
