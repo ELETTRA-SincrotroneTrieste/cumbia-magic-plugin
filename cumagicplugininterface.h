@@ -345,7 +345,7 @@ public:
                                                       QObject **plugin_qob){
         CuMagicPluginInterface *i;
         CuPluginLoader plo;
-        i = plo.get<CuMagicPluginInterface>(file_name, plugin_qob);
+        i = plo.get<CuMagicPluginInterface>(CuMagicPluginInterface::file_name, plugin_qob);
         if(!i)
             perr("CuMagicPluginInterface::get_instance: failed to load plugin \"%s\"", file_name);
         else
