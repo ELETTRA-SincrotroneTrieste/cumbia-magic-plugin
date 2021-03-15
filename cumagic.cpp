@@ -407,8 +407,8 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                         QVariantList vl (vf.begin(), vf.end());
 #else
                         QVariantList vl;
-                        foreach(fload d, vf)
-                            vl << d;
+                        foreach(float f, vf)
+                            vl << f;
 #endif
                         converted = t->setProperty(p, vl);
                     }break;
