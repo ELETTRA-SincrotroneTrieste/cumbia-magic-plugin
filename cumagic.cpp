@@ -391,51 +391,99 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                     case CuVariant::LongDouble: {
                         std::vector<double> vdou;
                         v.toVector<double>(vdou);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vdou.begin(), vdou.end());
+#else
+                        QVariantList vl;
+                        foreach(double d, vdou)
+                            vl << d;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::Float: {
                         std::vector<float> vf;
                         v.toVector<float>(vf);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vf.begin(), vf.end());
+#else
+                        QVariantList vl;
+                        foreach(fload d, vf)
+                            vl << d;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::Int: {
                         std::vector<int> vi;
                         v.toVector<int>(vi);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vi.begin(), vi.end());
+#else
+                        QVariantList vl;
+                        foreach(int i, vi)
+                            vl << i;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::Short: {
                         std::vector<short> vsi;
                         v.toVector<short>(vsi);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vsi.begin(), vsi.end());
+#else
+                        QVariantList vl;
+                        foreach(short si, vsi)
+                            vl << si;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::UInt: {
                         std::vector<unsigned> vui;
                         v.toVector<unsigned>(vui);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vui.begin(), vui.end());
+#else
+                        QVariantList vl;
+                        foreach(unsigned ui, vui)
+                            vl << ui;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::LongUInt:
                     case CuVariant::LongLongUInt: {
                         std::vector<unsigned long long> vull;
                         v.toVector<unsigned long long>(vull);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vull.begin(), vull.end());
+#else
+                        QVariantList vl;
+                        foreach(unsigned long long ulli, vull)
+                            vl << ulli;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::LongLongInt:
                     case CuVariant::LongInt: {
                         std::vector< long long> vll;
                         v.toVector< long long>(vll);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vll.begin(), vll.end());
+#else
+                        QVariantList vl;
+                        foreach(unsigned long long lli, vll)
+                            vl << lli;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::UShort: {
                         std::vector<unsigned short> vus;
                         v.toVector<unsigned short>(vus);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
                         QVariantList vl (vus.begin(), vus.end());
+#else
+                        QVariantList vl;
+                        foreach(unsigned short us, vus)
+                            vl << us;
+#endif
                         converted = t->setProperty(p, vl);
                     }break;
                     case CuVariant::Boolean: {
