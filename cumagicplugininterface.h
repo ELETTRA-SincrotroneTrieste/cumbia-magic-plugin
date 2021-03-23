@@ -137,12 +137,17 @@ public:
  * \endcode
  *
  * The cumbia-magic-plugin allows to read data through the cumbia engine and display it on a generic widget
- * (or even a simple QObject) through its properties. For example, a scalar number can be set on a progress bar,
+ * (or even a simple QObject) through its *Qt properties*. For example, a scalar number can be set on a progress bar,
  * displayed as text on either a QLineEdit or QLabel or as a number in either a QDoubleSpinBox or a QLCDNumber.
  * Configuration properties (*min, max, format, display_unit*) are used to set the minimum and maximum properties
  * of an object, if relevant. *format* is used to display numbers as text. The *display_unit* is appended to the
  * text if either the property *displayUnitEnabled is not defined or defined and set to true*.
-
+ *
+ * If a Qt object property is defined with the *Q_PROPERTY* macro in the class definition, the type of that property
+ * is used to convert the value read (see \ref def_prop_update [Property type identification and data conversion]).
+ * If a CuMagic is applied to an object and the specified *property name is not defined with the Q_PROPERTY macro*, then
+ * the type of data is used to add and set a *dynamic property* of that type on the object.
+ *
  * \note
  * The *displayUnitEnabled* property is the same used in QuLabel for the same purpose.
  *
@@ -171,7 +176,10 @@ public:
  * Scalar data is naturally mapped into display scalar widgets with a *one liner*:
  *
  * \code
+   // show a double scalar value on a QLcdNumber
    CuMagicI *ma0 = plugin_i->new_magic(ui->lcdNumber, "$1/double_scalar");
+   // show a short value on a progress bar
+   // since a progress bar naturally has *minimum* and *maximum* properties, the CuMagic takes care of them
    CuMagicI *ma1 = plugin_i->new_magic(ui->progressBar, "$1/short_scalar");
  * \endcode
  *
@@ -257,7 +265,10 @@ public:
  * \li checked
  * \li text
  *
- * The type of the property is identified, and the type of the data is converted accordingly.
+ * \subsubsection prop_identif Property type identification and data conversion
+ *
+ * If the property targeted by CuMagic is defined by the Q_PROPERTY macro in the class definition, then
+ * the type of the property is identified, and the type of the data is converted accordingly.
  * The supported types are:
  *
  * \li QVector<double>
@@ -277,6 +288,9 @@ public:
  * \li QMetaType::Bool:
  * \li QVariant::String:
  * \li QVariant::StringList:
+ *
+ * If the CuMagic targets a property not defined with the Q_PROPERTY macro, then a dynamic property is added to the
+ * object and its type will be in accord with the data type.
  *
  * \subsubsection def_prop_config On configuration
  *

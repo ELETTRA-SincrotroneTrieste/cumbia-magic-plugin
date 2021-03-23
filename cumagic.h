@@ -2,6 +2,7 @@
 #define QUMULTIREADER_H
 
 #include <QObject>
+#include <QMetaType>
 #include <QList>
 #include <cumagicplugininterface.h>
 #include <cudata.h>
@@ -9,6 +10,22 @@
 #include <qustring.h>
 #include <qustringlist.h>
 
+#include <cumatrix.h>
+Q_DECLARE_METATYPE(CuMatrix<double>)
+Q_DECLARE_METATYPE(CuMatrix<float>)
+Q_DECLARE_METATYPE(CuMatrix<long double>)
+Q_DECLARE_METATYPE(CuMatrix<int>)
+Q_DECLARE_METATYPE(CuMatrix<long int>)
+Q_DECLARE_METATYPE(CuMatrix<long long int>)
+Q_DECLARE_METATYPE(CuMatrix<unsigned int>)
+Q_DECLARE_METATYPE(CuMatrix<unsigned long int>)
+Q_DECLARE_METATYPE(CuMatrix<unsigned long long int>)
+Q_DECLARE_METATYPE(CuMatrix<short int>)
+Q_DECLARE_METATYPE(CuMatrix<unsigned short int>)
+Q_DECLARE_METATYPE(CuMatrix<char>)
+Q_DECLARE_METATYPE(CuMatrix<unsigned char>)
+Q_DECLARE_METATYPE(CuMatrix<bool>)
+Q_DECLARE_METATYPE(CuMatrix<std::string>)
 
 class CuMagicPluginPrivate;
 class Cumbia;
@@ -167,8 +184,12 @@ private:
  *
  * \subsection list_of_objects CuMagic attached to a list of objects
  *
- * \li cumbia scalar data: can only be used in context number 1.
- * \li cumbia spectrum data: through index mapping, each element of the data array can be displayed in the specified object
+ * \li cumbia *scalar* data: can only be used in context number 1.
+ * \li cumbia *spectrum* data: through index mapping, each element of the data array can be displayed in the specified object
+ * \li cumbia *matrix* data: can only be used in context number 1. The plugin registers the CuMatrix as Qt meta type for the supported types.
+ *
+ * \note Type in *matrix* data must be consistent with *type* in object properties. In other words a CuMatrix<double> data cannot be set on
+ *       an int type property.
  *
  * Please read CuMagicPluginInterface documentation and the <em>magicdemo</em> example
  * under the examples subfolder of the plugin directory.

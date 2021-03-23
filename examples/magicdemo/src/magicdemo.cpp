@@ -13,6 +13,38 @@
 #include <QMetaProperty>
 #include <quplotcurve.h>
 
+
+void MyDisplayMatrix::setMyData(const CuMatrix<double> &m) {
+    if(m != myData()) {
+        if(m.nrows() != (size_t) rowCount() || m.ncols() != (size_t) columnCount()) {
+            this->clear();
+            setRowCount(m.nrows());
+            setColumnCount(m.ncols());
+        }
+        for(size_t r = 0; r < m.nrows(); r++) {
+            for(size_t c = 0; c < m.ncols(); c++) {
+                QTableWidgetItem *i = item(r, c);
+                if(!i) {
+                    i = new QTableWidgetItem(QString::number(m[r][c]));
+                    setItem(r, c, i);
+                }
+                else
+                    i->setText(QString::number(m[r][c]));
+            }
+        }
+    }
+    else
+        printf("MyDisplayMatrix::setMyData: data unchanged\n");
+}
+
+CuMatrix<double> MyDisplayMatrix::myData() const {
+    std::vector<double> v;
+    for(int i = 0; i < rowCount(); i++)
+        for(int j = 0; j < columnCount(); j++)
+            v.push_back( item(i, j)->text().toDouble());
+    return CuMatrix<double>(v, rowCount(), columnCount());
+}
+
 MyDisplayVector::MyDisplayVector(QWidget *parent) : QuPlotBase(parent) {
     setXAxisAutoscaleEnabled(true);
     setYAxisAutoscaleEnabled(true);
@@ -48,7 +80,7 @@ Magicdemo::Magicdemo(CumbiaPool *cumbia_pool, QWidget *parent) :
 
     // load magic plugin
     QObject *magic_plo;
-    CuMagicPluginInterface *plugin_i = CuMagicPluginInterface::get_instance(cumbia_pool, m_ctrl_factory_pool, magic_plo);
+    CuMagicPluginInterface *plugin_i = CuMagicPluginInterface::get_instance(cumbia_pool, m_ctrl_factory_pool, &magic_plo);
     if(!plugin_i)
         perr("Magicdemo: failed to load plugin \"%s\"", CuMagicPluginInterface::file_name);
     else {
@@ -71,6 +103,9 @@ Magicdemo::Magicdemo(CumbiaPool *cumbia_pool, QWidget *parent) :
         CuMagicI *magic9 = plugin_i->new_magic(ui->x2_2, "$1/double_spectrum[2]");
         CuMagicI *magic10 = plugin_i->new_magic(ui->x3_2, "$1/double_spectrum[3]");
         CuMagicI *magic11 = plugin_i->new_magic(ui->x4_2, "$1/double_spectrum[4]");
+
+        // matrix!
+        CuMagicI *mamatrix = plugin_i->new_magic(ui->tableWidget, "$1/double_image_ro", "myData");
 
     }
 
@@ -108,4 +143,5 @@ Magicdemo::~Magicdemo()
 {
     delete ui;
 }
+
 

@@ -2,17 +2,28 @@
 #define Magicdemo_H
 
 #include <QWidget>
+#include <QTableWidget>
 
 // cumbia
 #include <qulogimpl.h>
 #include <cucontrolsfactorypool.h>
 #include <quplot_base.h>
+#include <cumatrix.h>
 class CumbiaPool;
 // cumbia
 
 namespace Ui {
 class Magicdemo;
 }
+
+class MyDisplayMatrix : public QTableWidget {
+    Q_OBJECT
+    Q_PROPERTY(CuMatrix <double> myData READ myData WRITE setMyData)
+public:
+    MyDisplayMatrix(QWidget *parent) : QTableWidget(parent) {}
+    void setMyData(const CuMatrix<double> &m);
+    CuMatrix<double> myData() const;
+};
 
 class MyDisplayVector : public QuPlotBase {
     Q_OBJECT

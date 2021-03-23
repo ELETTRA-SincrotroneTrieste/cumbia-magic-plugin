@@ -14,12 +14,14 @@
    <string>Magicdemo</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="2" colspan="4">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>24</number>
-     </property>
-    </widget>
+   <item row="3" column="4">
+    <widget class="QLineEdit" name="x3"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="x0_2"/>
+   </item>
+   <item row="4" column="5">
+    <widget class="QLineEdit" name="x4_2"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -27,55 +29,6 @@
       <string>string</string>
      </property>
     </widget>
-   </item>
-   <item row="3" column="0" rowspan="3">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;double&lt;/p&gt;&lt;p&gt;spectrum&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLCDNumber" name="lcdNumber"/>
-   </item>
-   <item row="2" column="5">
-    <widget class="QCheckBox" name="checkBox">
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="3">
-    <widget class="QLineEdit" name="x2"/>
-   </item>
-   <item row="5" column="1" colspan="5">
-    <widget class="MyDisplayVector" name="plot" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>3</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>double</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4">
-    <widget class="QLineEdit" name="x3"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="x0"/>
-   </item>
-   <item row="3" column="2">
-    <widget class="QLineEdit" name="x1"/>
-   </item>
-   <item row="3" column="5">
-    <widget class="QLineEdit" name="x4"/>
    </item>
    <item row="1" column="1" colspan="5">
     <widget class="QTextBrowser" name="textBrowser">
@@ -87,20 +40,77 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QLineEdit" name="x0_2"/>
+   <item row="2" column="5">
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QLineEdit" name="x1_2"/>
+   <item row="3" column="0" rowspan="3">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;double&lt;/p&gt;&lt;p&gt;spectrum&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
-   <item row="4" column="3">
-    <widget class="QLineEdit" name="x2_2"/>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="x1"/>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLCDNumber" name="lcdNumber"/>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="x0"/>
+   </item>
+   <item row="5" column="1" colspan="5">
+    <widget class="MyDisplayVector" name="plot" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>3</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="4" column="4">
     <widget class="QLineEdit" name="x3_2"/>
    </item>
-   <item row="4" column="5">
-    <widget class="QLineEdit" name="x4_2"/>
+   <item row="4" column="3">
+    <widget class="QLineEdit" name="x2_2"/>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="x2"/>
+   </item>
+   <item row="3" column="5">
+    <widget class="QLineEdit" name="x4"/>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="x1_2"/>
+   </item>
+   <item row="0" column="2" colspan="4">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>double</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="5">
+    <widget class="MyDisplayMatrix" name="tableWidget"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;double&lt;/p&gt;&lt;p&gt;matrix&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -111,6 +121,11 @@
    <extends>QWidget</extends>
    <header>magicdemo.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MyDisplayMatrix</class>
+   <extends>QTableWidget</extends>
+   <header>magicdemo.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
