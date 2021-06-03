@@ -245,7 +245,7 @@ void CuMagic::onUpdate(const CuData &data) {
         }
     }
     else if(!err) {
-        printf("\e[0;33mcalling m_prop set wit v %s prop %s\e[0m\n", v.toString().c_str(), qstoc(d->t_prop));
+        cuprintf("\e[0;33mcalling m_prop set wit v %s prop %s\e[0m\n", v.toString().c_str(), qstoc(d->t_prop));
         err = !m_prop_set(parent(), v, d->t_prop);
         m_err_msg_set(parent(), msg.c_str(), err);
     }
@@ -416,7 +416,7 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
             }
         }
         else if(pi < 0 && !converted && !prop.isEmpty()) {
-            printf("CuMagic::m_prop_set \e[1;32m HAS NO PROPERY DEFINED SO SETTING FREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\e[0m\n");
+            cuprintf("CuMagic::m_prop_set \e[1;32m HAS NO PROPERY DEFINED SO SETTING FREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\e[0m\n");
             CuVariant::DataType ty = v.getType();
             switch(v.getFormat()) {
             case CuVariant::Scalar: {
@@ -426,9 +426,9 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                 case CuVariant::LongDouble: {
                     double dou;
                     v.to<double>(dou);
-                    printf("CuMagic::m_prop_set %s DOUBLE! %f\n", qprop.toLatin1().data(),   dou);
+                    cuprintf("CuMagic::m_prop_set %s DOUBLE! %f\n", qprop.toLatin1().data(),   dou);
                     t->setProperty(qprop.toLatin1(), dou);
-                    printf("CuMagic::m_prop_set DOUBLE readback %f\n", t->property(qprop.toLatin1()).toDouble());
+                    cuprintf("CuMagic::m_prop_set DOUBLE readback %f\n", t->property(qprop.toLatin1()).toDouble());
                 }break;
                 case CuVariant::Float:
                     t->setProperty(qprop.toLatin1(), v.toFloat());
