@@ -141,12 +141,15 @@ void CuMagic::sendData(const CuData &da) {
 
 void CuMagic::setSource(const QString &src) {
     const QString &s = m_get_idxs(src); // s has "\[([\d,\-]+)\]" removed
-    qDebug() << __PRETTY_FUNCTION__ << src << "-->" << s << "idxs" << d->v_idxs;
+    qDebug() << __PRETTY_FUNCTION__ << src << "-->" << s << "idxs" << d->v_idxs << d->omap.keys();
     // if indexes change but src is unchanged, do not d->context->replace_reader
     if(s != d->src) {
         CuControlsReaderA *r = d->context->replace_reader(s.toStdString(), this);
+        printf("CuMagic.setSource: source set %s on magic %p controls reader %p\n", qstoc(s), this, r);
+
         if(r) {
             r->setSource(s);
+            printf("CuMagic.setSource: source set %s on magic %p\n", qstoc(s), this);
             d->src = s; // bare src, not r->source
         }
     }
@@ -172,8 +175,11 @@ const QObject *CuMagicPlugin::get_qobject() const {
 }
 
 void CuMagic::onUpdate(const CuData &data) {
+    printf("CuMagic.onUpdate: %s\n", datos(data));
     bool err = data["err"].toBool();
-    std::string msg = source().toStdString() + "\n" + data["msg"].toString();
+    const std::string& m = data.s("msg");
+    std::string msg = source().toStdString();
+    if(m.length() > 0) msg += "\n" + data["msg"].toString();
     const CuVariant &dv = data["value"];
     const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
 
@@ -241,13 +247,13 @@ void CuMagic::onUpdate(const CuData &data) {
         foreach(const QString& onam, d->omap.keys()) {
             const opropinfo &opropi = d->omap[onam];
             if(!err) err = !m_prop_set(opropi.obj, vgroup[onam], opropi.prop);
-            m_err_msg_set(opropi.obj, msg.c_str(), err);
+            m_err_msg_set(opropi.obj, opropi.idxs, opropi.prop, msg.c_str(), err);
         }
     }
     else if(!err) {
         cuprintf("\e[0;33mcalling m_prop set wit v %s prop %s\e[0m\n", v.toString().c_str(), qstoc(d->t_prop));
         err = !m_prop_set(parent(), v, d->t_prop);
-        m_err_msg_set(parent(), msg.c_str(), err);
+        m_err_msg_set(parent(), d->v_idxs, d->t_prop, msg.c_str(), err);
     }
 
     emit newData(data);
@@ -285,8 +291,10 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                              << d->propmap.value("checked", "checked")
                              << d->propmap.value("text", "text")
                                 : props << prop;
-    foreach(const QString& qprop, props) {
-        int pi = t->metaObject()->indexOfProperty(qprop.toLatin1().data());
+    int pi = -1;
+    for(int i = 0; i < props.size() && pi < 0; i++) {
+        const QString& qprop = props[i];
+        pi = t->metaObject()->indexOfProperty(qprop.toLatin1().data());
         if(fmt == CuVariant::Matrix) {
             QVariant var;
             switch (v.getType()) {
@@ -663,11 +671,12 @@ QString CuMagic::m_get_idxs(const QString &src) const {
 }
 
 QVariant CuMagic::m_str_convert(const CuVariant &v, CuMagic::TargetDataType tdt) {
+    printf("\e[1;31mCuMagic.m_str_convert: %s %s\e[0m\n", qstoc(d->src), v.toString().c_str());;
     int idx;
     QVariant qva;
     bool converted;
     d->v_idxs.size() > 0 ? idx = d->v_idxs[0] : idx = 0;
-    QuStringList vi = v.toStringVector(&converted);
+    QuStringList vi = v.toStringVector( d->format.toStdString().c_str(), &converted);
     if(converted && tdt == Scalar && idx < vi.size()) {
         qva = QVariant(vi[idx]);
     }
@@ -710,20 +719,34 @@ void CuMagic::m_configure(const CuData &da) {
                 }
             }
         }
-        if(da.containsKey("format"))
+        if(da.containsKey("format")) {
             d->format = QuString(da, "format");
+        }
         if(da.containsKey("display_unit"))
             d->display_unit = QuString(da, "display_unit");
+
+        printf("\e[1;33mCuMagic.m_configure: verifying prop format idx %d fmt %s for %s %s\e[0m\n",
+               t->metaObject()->indexOfProperty("format"),qstoc(d->format), qstoc(d->src), qstoc(t->objectName()));
+        if(!d->format.isEmpty() && t->metaObject()->indexOfProperty("format") > -1)
+            t->setProperty("format", d->format.toStdString().c_str());
+
+
     }
 }
 
-void CuMagic::m_err_msg_set(QObject *o, const QString &msg, bool err) {
+void CuMagic::m_err_msg_set(QObject *o, const QList<int> &idxs, const QString &prop, const QString &msg, bool err) {
     QWidget *w = qobject_cast<QWidget *>(o);
     if(w && (w->metaObject()->indexOfProperty("disable_on_error") > -1 || w->property("disable_on_error").toBool()) ) {
         w->setDisabled(err);
     }
-    if(w) w->setToolTip(msg);
-    else if(err) perr("CuMagic: error: %s", qstoc(msg));
+    int i = 0;
+    QString m(msg + " [");
+    for(i = 0; i < idxs.size() - 1; i++) m += QString("%1, ").arg(idxs[i]);
+    if(i < idxs.size()) m += QString("%1").arg(idxs[i]);
+    m += "]";
+    if(!prop.isEmpty()) m += " [ property: " + prop + "]";
+    if(w) w->setToolTip(m);
+    else if(err) perr("CuMagic: error: %s", qstoc(m));
 }
 
 QString CuMagic::m_idxs_to_string() const {
