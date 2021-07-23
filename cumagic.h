@@ -104,13 +104,11 @@ private:
         out.clear();
         std::vector<T> dv;
         ok &= in.toVector<T>(dv);
-        printf("CuMagic.m_v_split: input variant %s out v siz %ld\n", in.toString().c_str(), dv.size());
         foreach(const opropinfo& opropi, opromap) {
             std::vector <double> subv;
             foreach(size_t i, opropi.idxs)
                 if(dv.size() > i)
                     subv.push_back(dv[i]);
-            printf("CuMagic.m_v_split: prop %s --> %s\n", qstoc(opropi.obj->objectName()), CuVariant(subv).toString().c_str());
             out[opropi.obj->objectName()] = CuVariant(subv);
         }
         return ok;
@@ -119,7 +117,6 @@ private:
     QVariant m_str_convert(const CuVariant& v, TargetDataType tdt = Scalar);
 
     template <typename T> QVariant m_convert(const CuVariant& v, TargetDataType tdt = Scalar) {
-        printf("\e[1;34mCuMagic.m_convert<T>: %s from %s target data t %d\e[0m\n",  qstoc(d->src), v.toString().c_str(), tdt);
         size_t idx;
         QVariant qva;
         d->v_idxs.size() > 0 ? idx = d->v_idxs[0] : idx = 0;

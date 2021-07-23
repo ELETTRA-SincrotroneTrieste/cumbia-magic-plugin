@@ -145,11 +145,8 @@ void CuMagic::setSource(const QString &src) {
     // if indexes change but src is unchanged, do not d->context->replace_reader
     if(s != d->src) {
         CuControlsReaderA *r = d->context->replace_reader(s.toStdString(), this);
-        printf("CuMagic.setSource: source set %s on magic %p controls reader %p\n", qstoc(s), this, r);
-
         if(r) {
             r->setSource(s);
-            printf("CuMagic.setSource: source set %s on magic %p\n", qstoc(s), this);
             d->src = s; // bare src, not r->source
         }
     }
@@ -175,7 +172,6 @@ const QObject *CuMagicPlugin::get_qobject() const {
 }
 
 void CuMagic::onUpdate(const CuData &data) {
-    printf("CuMagic.onUpdate: %s\n", datos(data));
     bool err = data["err"].toBool();
     const std::string& m = data.s("msg");
     std::string msg = source().toStdString();
@@ -671,7 +667,6 @@ QString CuMagic::m_get_idxs(const QString &src) const {
 }
 
 QVariant CuMagic::m_str_convert(const CuVariant &v, CuMagic::TargetDataType tdt) {
-    printf("\e[1;31mCuMagic.m_str_convert: %s %s\e[0m\n", qstoc(d->src), v.toString().c_str());;
     int idx;
     QVariant qva;
     bool converted;
@@ -724,13 +719,8 @@ void CuMagic::m_configure(const CuData &da) {
         }
         if(da.containsKey("display_unit"))
             d->display_unit = QuString(da, "display_unit");
-
-        printf("\e[1;33mCuMagic.m_configure: verifying prop format idx %d fmt %s for %s %s\e[0m\n",
-               t->metaObject()->indexOfProperty("format"),qstoc(d->format), qstoc(d->src), qstoc(t->objectName()));
         if(!d->format.isEmpty() && t->metaObject()->indexOfProperty("format") > -1)
             t->setProperty("format", d->format.toStdString().c_str());
-
-
     }
 }
 

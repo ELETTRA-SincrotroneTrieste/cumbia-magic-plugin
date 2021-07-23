@@ -19,6 +19,13 @@ isEmpty(prefix) {
 
 include ($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri)
 
+eval(CUMBIA_QTCONTROLS_V_HEX = CUMBIA_QTCTRL_VERSION_HEX)
+CUMBIA_QTCONTROLS_VERSION_REQUIRED=0x010300
+
+lessThan($${CUMBIA_QTCONTROLS_V_HEX}, $${CUMBIA_QTCONTROLS_VERSION_REQUIRED}) {
+    error("this version of cumbia-magic requires at least cumbia $${CUMBIA_QTCONTROLS_VERSION_REQUIRED}. Found $${CUMBIA_QTCTRL_VERSION_HEX}" )
+}
+
 #
 #
 # Here qumbia-plugins include files will be installed
