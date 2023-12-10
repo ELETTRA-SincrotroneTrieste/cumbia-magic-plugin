@@ -235,6 +235,7 @@ void CuMagic::onUpdate(const CuData &data) {
         case CuVariant::VoidPtr:
         case CuVariant::TypeInvalid:
         case CuVariant::EndDataTypes:
+        case CuVariant::EndVariantTypes:
             err = true;
             msg = "CuMagic.onUpdate: unsupported type \"" + v.dataTypeStr(dt) + "\"";
             break;
