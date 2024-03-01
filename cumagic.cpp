@@ -172,7 +172,6 @@ const QObject *CuMagicPlugin::get_qobject() const {
 }
 
 void CuMagic::onUpdate(const CuData &data) {
-    printf("CuMagic data %s\n", datos(data));
     bool err = data[CuDType::Err].toBool();  // data["err"]
     const std::string& m = data.s(CuDType::Message);  // data.s("msg")
     std::string msg = source().toStdString();
