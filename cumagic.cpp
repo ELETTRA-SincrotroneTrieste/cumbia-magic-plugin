@@ -148,6 +148,7 @@ void CuMagic::setSource(const QString &src) {
         if(r) {
             r->setSource(s);
             d->src = s; // bare src, not r->source
+            qDebug() << __PRETTY_FUNCTION__ << src << "-->" << r->source() << "idxs" << d->v_idxs << d->omap.keys();
         }
     }
 }
@@ -288,6 +289,7 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                              << d->propmap.value("checked", "checked")
                              << d->propmap.value("text", "text")
                                 : props << prop;
+    qDebug() << __PRETTY_FUNCTION__ << props;
     int pi = -1;
     for(int i = 0; i < props.size() && pi < 0; i++) {
         const QString& qprop = props[i];
@@ -380,7 +382,8 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                 qva = m_convert<int>(v, List);
             }
             else {
-                switch(mp.userType()) {
+                pretty_pri("user type %d", mp.metaType().id());
+                switch(mp.metaType().id()) {
                 case QMetaType::Int: {
                     qva = m_convert<int>(v);
                 } break;
@@ -404,10 +407,10 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                 case QMetaType::Bool: {
                     qva = m_convert<bool>(v);
                 } break;
-                case QVariant::String: {
+                case QMetaType::QString: {
                     qva = m_str_convert(v);
                 } break;
-                case QVariant::StringList: {
+                case QMetaType::QStringList: {
                     qva = QuStringList(v);
                 } break;
                 default:
@@ -687,6 +690,7 @@ QVariant CuMagic::m_str_convert(const CuVariant &v, CuMagic::TargetDataType tdt)
         }
         tdt == List ? qva = QVariant::fromValue(out) : qva = QVariant::fromValue(out.toVector());
     }
+    qDebug() << __PRETTY_FUNCTION__ << tdt <<  qva;
     return qva;
 }
 
