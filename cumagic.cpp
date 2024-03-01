@@ -172,14 +172,15 @@ const QObject *CuMagicPlugin::get_qobject() const {
 }
 
 void CuMagic::onUpdate(const CuData &data) {
-    bool err = data["err"].toBool();
-    const std::string& m = data.s("msg");
+    printf("CuMagic data %s\n", datos(data));
+    bool err = data[CuDType::Err].toBool();  // data["err"]
+    const std::string& m = data.s(CuDType::Message);  // data.s("msg")
     std::string msg = source().toStdString();
-    if(m.length() > 0) msg += "\n" + data["msg"].toString();
-    const CuVariant &dv = data["value"];
+    if(m.length() > 0) msg += "\n" + data[CuDType::Message].toString();  // data["msg"]
+    const CuVariant &dv = data[CuDType::Value];  // data["value"]
     const CuVariant &v = dv.isValid() ? dv : d->on_error_value;
 
-    if(data["type"].toString() == "property") {
+    if(data[CuDType::Type].toString() == "property") {  // data["type"]
         m_configure(data);
     }
 
@@ -698,10 +699,10 @@ void CuMagic::m_configure(const CuData &da) {
             objs << oi.obj;
     }
     foreach(QObject *t, objs) {
-        if(da.containsKey("min") && da.containsKey("max")) {
+        if(da.containsKey(CuDType::Min) && da.containsKey(CuDType::Max)) {  // da.containsKey("min"), da.containsKey("max")
             double m = -1.0, M = -1.0;
-            da["min"].to<double>(m);
-            da["max"].to<double>(M);
+            da[CuDType::Min].to<double>(m);  // da["min"]
+            da[CuDType::Max].to<double>(M);  // da["max"]
             if(m != M) {
                 foreach(const QString& p, QStringList() << "minimum" << "min") {
                     if(t->metaObject()->indexOfProperty(qstoc(p)) > -1) {
@@ -715,7 +716,7 @@ void CuMagic::m_configure(const CuData &da) {
                 }
             }
         }
-        if(da.containsKey("format")) {
+        if(da.containsKey(CuDType::NumberFormat)) {  // da.containsKey("format")
             d->format = QuString(da, "format");
         }
         if(da.containsKey("display_unit"))
