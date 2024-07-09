@@ -382,8 +382,12 @@ bool CuMagic::m_prop_set(QObject *t, const CuVariant &v, const QString &prop)
                 qva = m_convert<int>(v, List);
             }
             else {
-                pretty_pri("user type %d", mp.metaType().id());
-                switch(mp.metaType().id()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+                switch(mp.metaType().id())
+#else
+                switch(mp.userType()) // equivalent to qt6's metaType.id()
+#endif
+                {
                 case QMetaType::Int: {
                     qva = m_convert<int>(v);
                 } break;
